@@ -1,6 +1,6 @@
 import { createTheme } from '@mui/material/styles';
 
-const corpicoPalette = {
+export const corpicoPalette = {
   azul: '#3e64ac',
   violeta: '#712d85',
   rojo: '#e22b14',
@@ -10,11 +10,18 @@ const corpicoPalette = {
   celeste: '#5fc3e6',
 };
 
-const appTheme = createTheme({
+const corpicoTheme = createTheme({
   palette: {
-    mode: 'dark',
-    corpico: corpicoPalette,
-
+    mode: 'light',
+    corpico: {
+      ...corpicoPalette,
+      terciario: {
+        main: corpicoPalette.amarillo,
+        contrastText: '#000',
+        light: '#ffe957',
+        dark: '#ccb018',
+      },
+    },
     primary: {
       main: corpicoPalette.azul,
       light: '#6d8dc2',
@@ -38,28 +45,16 @@ const appTheme = createTheme({
       dark: '#2a8256',
     },
     warning: {
-      main: corpicoPalette.amarillo,
+      main: corpicoPalette.naranja,
       contrastText: '#000',
-      light: '#ffe957',
-      dark: '#ccb018',
+      light: '#f98c5c',
+      dark: '#c94f1a',
     },
     error: {
       main: corpicoPalette.rojo,
       contrastText: '#fff',
       light: '#e85a4a',
       dark: '#b32010',
-    },
-    background: {
-      default: '#e0e0e0',
-      main: '#f0f2f5',
-      paper: '#ffffff',
-      layout: 'rgba(31, 31, 31, 1)',
-    },
-    text: {
-      primary: 'rgba(255, 255, 255, 0.87)',
-      secondary: 'rgba(255, 255, 255, 0.6)',
-      third: 'rgba(31, 31, 31, 1)',
-      disabled: 'rgba(255, 255, 255, 0.38)',
     },
     grey: {
       50: '#fafafa',
@@ -72,6 +67,15 @@ const appTheme = createTheme({
       700: '#616161',
       800: '#424242',
       900: '#212121',
+    },
+    background: {
+      default: '#e0e0e0',
+      paper: '#ffffff',
+    },
+    text: {
+      primary: 'rgba(0, 0, 0, 0.87)',
+      secondary: 'rgba(0, 0, 0, 0.6)',
+      disabled: 'rgba(0, 0, 0, 0.38)',
     },
   },
   typography: {
@@ -101,13 +105,21 @@ const appTheme = createTheme({
   },
   components: {
     MuiCssBaseline: {
-      styleOverrides: `
-        html, body, #root {
-          height: 100%;
-          margin: 0;
-          padding: 0;
-        }
-      `
+      styleOverrides: {
+        html: {
+          height: '100%',
+          margin: 0,
+          padding: 0,
+        },
+        body: {
+          height: '100%',
+          margin: 0,
+          padding: 0,
+        },
+        '#root': {
+          height: '100%',
+        },
+      },
     },
     MuiCardHeader: {
       styleOverrides: {
@@ -150,17 +162,14 @@ const appTheme = createTheme({
         }),
         icon: ({ theme }) => ({
           color: `${theme.palette.success.contrastText} !important`,
-        })
-      }
+        }),
+      },
     },
     MuiButton: {
       styleOverrides: {
         root: {
           borderRadius: 8,
           padding: '8px 20px',
-        },
-        containedPrimary: {
-          // Ya usa palette.primary.main por defecto
         },
         outlinedPrimary: ({ theme }) => ({
           borderColor: theme.palette.corpico.azul,
@@ -169,13 +178,6 @@ const appTheme = createTheme({
             backgroundColor: 'rgba(62, 100, 172, 0.04)',
           },
         }),
-      },
-    },
-    MuiTextField: {
-      styleOverrides: {
-        root: {
-          // Estilos globales para todos los TextField
-        },
       },
     },
     MuiOutlinedInput: {
@@ -196,11 +198,11 @@ const appTheme = createTheme({
     MuiAppBar: {
       styleOverrides: {
         colorPrimary: ({ theme }) => ({
-          backgroundColor: theme.palette.corpico.azul,
+          backgroundColor: theme.palette.primary.main,
         }),
       },
     },
   },
 });
 
-export default appTheme;
+export default corpicoTheme;

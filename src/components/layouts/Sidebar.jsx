@@ -11,6 +11,8 @@ import {
   Collapse,
   Divider,
   styled,
+  IconButton,
+  Tooltip,
 } from '@mui/material';
 import {
   Apps as AppsIcon,
@@ -27,21 +29,28 @@ import {
   LocationOn as LocationOnIcon,
   Desk as DeskIcon,
   Timeline as TimelineIcon,
+  ChevronLeft,
+  ChevronRight,
 } from '@mui/icons-material';
 import Logo from '../../assets/img/corpico_logo.svg';
+import Logo2 from '../../assets/img/corpico_logo2.svg';
 
 const sidebarWidth = 230;
-const StyledDrawer = styled(Drawer)(({ theme }) => ({
-  width: sidebarWidth,
+const collapsedWidth = 70;
+
+const StyledDrawer = styled(Drawer)(({ theme, iscollapsed }) => ({
+  width: iscollapsed === 'true' ? collapsedWidth : sidebarWidth,
   flexShrink: 0,
   '& .MuiDrawer-paper': {
-    width: sidebarWidth,
+    width: iscollapsed === 'true' ? collapsedWidth : sidebarWidth,
     boxSizing: 'border-box',
     backgroundColor: theme.palette.background.layout,
     color: theme.palette.text.primary,
     borderRadius: '12px',
     boxShadow: '0 4px 20px 0 rgba(0, 0, 0, .14), 0 7px 10px -5px rgba(0, 0, 0, .4)',
     position: 'fixed',
+    transition: 'width 0.3s ease',
+    overflowX: 'hidden', // ✅ evita scroll horizontal
   },
 }));
 
@@ -49,6 +58,11 @@ const Sidebar = () => {
   const location = useLocation();
   const [openSecciones, setOpenSecciones] = useState(false);
   const [openInstitucional, setOpenInstitucional] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsCollapsed(!isCollapsed);
+  };
 
   const menuItems = [
     {
@@ -68,9 +82,9 @@ const Sidebar = () => {
       icon: <AppsIcon />,
       path: '',
       children: [
-        { text: 'Cajas', icon: 'SC', path: '/cajas' },
-        { text: 'Usuarios', icon: 'SU', path: '/usuarios' },
-        { text: 'Reclamos', icon: 'SR', path: '/reclamos' },
+        { text: 'Cajas', icon: <DeskIcon />, path: '/cajas' },
+        { text: 'Usuarios', icon: <GroupIcon />, path: '/usuarios' },
+        { text: 'Reclamos', icon: <ReceiptLongIcon />, path: '/reclamos' },
       ],
     },
     { text: 'Estados', icon: <TimelineIcon />, path: '/estados' },
@@ -78,37 +92,52 @@ const Sidebar = () => {
     { text: 'Publicidades', icon: <TvIcon />, path: '/publicidades' },
     { text: 'Roles', icon: <ContentPasteIcon />, path: '/roles' },
     { text: 'Sectores', icon: <LocationOnIcon />, path: '/sectores' },
-    { text: 'Usuarios', icon: <GroupIcon />, path: '/usuarios' },
   ];
 
   const isSeccionesActive = ['/cajas', '/usuarios', '/reclamos'].includes(location.pathname);
   const isInstitucionalActive = ['/institucional/internos', '/institucional/corpico', '/institucional/humand', '/institucional/personal', '/institucional/instagram'].includes(location.pathname);
 
   useEffect(() => {
-    if (isSeccionesActive) {
-      setOpenSecciones(true);
-    }
+    if (isSeccionesActive) setOpenSecciones(true);
   }, [isSeccionesActive]);
 
-  const handleSeccionesClick = () => {
-    setOpenSecciones(!openSecciones);
-  };
-
-  const handleInstitucionalClick = () => {
-    setOpenInstitucional(!openInstitucional);
-  };
+  const handleSeccionesClick = () => setOpenSecciones(!openSecciones);
+  const handleInstitucionalClick = () => setOpenInstitucional(!openInstitucional);
 
   return (
-    <StyledDrawer variant="permanent" anchor="left">
-      <Box sx={{ p: 2, textAlign: 'center' }}>
-        <img src={Logo} alt="Corpico" style={{ width: '50%', margin: '5px 0' }} />
+    <StyledDrawer variant="permanent" anchor="left" iscollapsed={isCollapsed.toString()}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: isCollapsed ? 'column' : 'row',
+          alignItems: 'center',
+          justifyContent: isCollapsed ? 'center' : 'space-between',
+          px: 2,
+          py: 2,
+        }}
+      >
+        {isCollapsed ? (
+          <>
+            <IconButton onClick={toggleSidebar} sx={{ mb: 1 }}>
+              <ChevronRight />
+            </IconButton>
+            <img src={Logo2} alt="Corpico" style={{ width: '60%' }} />
+          </>
+        ) : (
+          <>
+            <img src={Logo} alt="Corpico" style={{ width: '40%' }} />
+            <IconButton onClick={toggleSidebar}>
+              <ChevronLeft />
+            </IconButton>
+          </>
+        )}
       </Box>
+
       <Divider sx={{ bgcolor: 'rgba(255, 255, 255, 0.12)', mx: 2 }} />
       <List>
         {menuItems.map((item, index) => (
           <React.Fragment key={index}>
             {item.children ? (
-              // Elemento del menú con submenú (Secciones o Institucional)
               <>
                 <ListItem disablePadding>
                   <ListItemButton
@@ -120,49 +149,32 @@ const Sidebar = () => {
                         bgcolor: 'corpico.verde',
                         color: 'white',
                       }
-                    }} >
-                    <ListItemIcon
-                      sx={{
-                        color: (item.text === 'Secciones' && isSeccionesActive) || (item.text === 'Institucional' && isInstitucionalActive) ? 'white' : 'text.primary',
-                        '&:hover': { color: 'white' },
-                      }} >
-                      {item.icon}
-                    </ListItemIcon>
-                    <ListItemText primary={item.text} />
-                    {(item.text === 'Secciones' && openSecciones) || (item.text === 'Institucional' && openInstitucional) ? <ExpandLess /> : <ExpandMore />}
+                    }}
+                  >
+                    <Tooltip title={isCollapsed ? item.text : ''} placement="right">
+                      <ListItemIcon sx={{ color: 'inherit' }}>{item.icon}</ListItemIcon>
+                    </Tooltip>
+                    {!isCollapsed && <ListItemText primary={item.text} />}
+                    {!isCollapsed && ((item.text === 'Secciones' && openSecciones) || (item.text === 'Institucional' && openInstitucional) ? <ExpandLess /> : <ExpandMore />)}
                   </ListItemButton>
                 </ListItem>
-                <Collapse in={(item.text === 'Secciones' && openSecciones) || (item.text === 'Institucional' && openInstitucional)} timeout="auto" unmountOnExit>
+                <Collapse in={!isCollapsed && ((item.text === 'Secciones' && openSecciones) || (item.text === 'Institucional' && openInstitucional))} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
                     {item.children.map((child, childIndex) => (
-                      <ListItem
-                        key={childIndex}
-                        disablePadding
-                        sx={{
-                          bgcolor: location.pathname === child.path ? 'corpico.verde' : 'transparent',
-                          color: location.pathname === child.path ? 'white' : 'text.primary',
-                          '&:hover': {
-                            bgcolor: 'corpico.verde',
-                            color: 'white',
-                          }
-                        }} >
+                      <ListItem key={childIndex} disablePadding>
                         {child.isExternal ? (
-                          <ListItemButton component="a" href={child.path} target="_blank" rel="noopener noreferrer" sx={{ pl: 4 }} >
-                            <ListItemIcon sx={{ color: 'text.primary', '&:hover': { color: 'white' } }}>
-                              {child.icon}
-                            </ListItemIcon>
-                            <ListItemText primary={child.text} />
+                          <ListItemButton component="a" href={child.path} target="_blank" rel="noopener noreferrer" sx={{ pl: 4 }}>
+                            <Tooltip title={isCollapsed ? child.text : ''} placement="right">
+                              <ListItemIcon sx={{ color: 'inherit' }}>{child.icon}</ListItemIcon>
+                            </Tooltip>
+                            {!isCollapsed && <ListItemText primary={child.text} />}
                           </ListItemButton>
                         ) : (
                           <ListItemButton component={NavLink} to={child.path} sx={{ pl: 4 }}>
-                            <ListItemIcon
-                              sx={{
-                                color: location.pathname === child.path ? 'white' : 'text.primary',
-                                '&:hover': { color: 'white' },
-                              }} >
-                              {child.icon}
-                            </ListItemIcon>
-                            <ListItemText primary={child.text} />
+                            <Tooltip title={isCollapsed ? child.text : ''} placement="right">
+                              <ListItemIcon sx={{ color: 'inherit' }}>{child.icon}</ListItemIcon>
+                            </Tooltip>
+                            {!isCollapsed && <ListItemText primary={child.text} />}
                           </ListItemButton>
                         )}
                       </ListItem>
@@ -171,26 +183,12 @@ const Sidebar = () => {
                 </Collapse>
               </>
             ) : (
-              // Elemento de menú normal sin submenú
-              <ListItem
-                disablePadding
-                sx={{
-                  bgcolor: location.pathname === item.path ? 'corpico.verde' : 'transparent',
-                  color: location.pathname === item.path ? 'white' : 'text.primary',
-                  '&:hover': {
-                    bgcolor: 'corpico.verde',
-                    color: 'white',
-                  }
-                }} >
+              <ListItem disablePadding>
                 <ListItemButton component={NavLink} to={item.path}>
-                  <ListItemIcon
-                    sx={{
-                      color: location.pathname === item.path ? 'white' : 'text.primary',
-                      '&:hover': { color: 'white' },
-                    }} >
-                    {item.icon}
-                  </ListItemIcon>
-                  <ListItemText primary={item.text} />
+                  <Tooltip title={isCollapsed ? item.text : ''} placement="right">
+                    <ListItemIcon sx={{ color: 'inherit' }}>{item.icon}</ListItemIcon>
+                  </Tooltip>
+                  {!isCollapsed && <ListItemText primary={item.text} />}
                 </ListItemButton>
               </ListItem>
             )}

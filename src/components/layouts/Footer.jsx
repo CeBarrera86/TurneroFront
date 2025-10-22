@@ -3,8 +3,8 @@ import { Box, styled, Typography, Container } from '@mui/material';
 
 const StyledFooter = styled(Box)(({ theme }) => {
   return {
-    backgroundColor: theme.palette.background.layout,
-    color: theme.palette.text.primary,
+    backgroundColor: theme.palette.corpico.terciario.main,
+    color: theme.palette.corpico.terciario.contrastText,
     boxShadow: '0 4px 20px 0 rgba(0, 0, 0, .14), 0 7px 10px -5px rgba(0, 0, 0, .4)',
     borderRadius: '12px',
     position: 'relative',

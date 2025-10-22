@@ -15,8 +15,8 @@ import { Search as SearchIcon, Person as PersonIcon } from '@mui/icons-material'
 
 const StyledAppBar = styled(AppBar)(({ theme }) => {
   return {
-    backgroundColor: theme.palette.background.layout,
-    color: theme.palette.text.primary,
+    backgroundColor: theme.palette.success.main,
+    color: theme.palette.success.contrastText,
     boxShadow: '0 4px 20px 0 rgba(0, 0, 0, .14), 0 7px 10px -5px rgba(0, 0, 0, .4)',
     borderRadius: '12px',
     position: 'relative',
@@ -48,15 +48,15 @@ const GradientLine = styled(Box)(({ theme }) => {
   };
 });
 
-const Navbar = () => {
-  const [userName, setUserName] = useState('Desconocido');
+const NavbarAuth = () => {
+  const [name, setName] = useState('Desconocido');
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
   useEffect(() => {
     const storedName = sessionStorage.getItem('nombre');
     if (storedName) {
-      setUserName(storedName);
+      setName(storedName);
     }
   }, []);
 
@@ -69,11 +69,10 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
-    console.log("Cerrando sesión...");
-    sessionStorage.removeItem('nombre');
-    setUserName('Desconocido');
+    sessionStorage.clear();
+    setName('Desconocido');
     handleClose();
-    // Redireccionar al login o actualizar el estado de autenticación
+    window.location.href = '/login';
   };
 
   return (
@@ -93,7 +92,7 @@ const Navbar = () => {
         </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Typography sx={{ mr: 1 }}>Hola {userName}</Typography>
+          <Typography sx={{ mr: 1 }}>Hola {name}</Typography>
           <IconButton
             onClick={handleClick}
             size="small"
@@ -152,4 +151,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default NavbarAuth;
