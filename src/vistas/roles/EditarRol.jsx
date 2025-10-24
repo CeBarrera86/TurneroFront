@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Typography, Box } from '@mui/material';
+import { Box } from '@mui/material';
 import { useOutletContext, useNavigate, useParams } from 'react-router-dom';
 import EditarForm from '../../components/formularios/EditarForm';
 
@@ -13,7 +13,7 @@ const EditarRol = () => {
   }, [setTitulo]);
 
   const campos = [
-    { nombre: 'tipo', label: 'Tipo de Rol', tipo: 'text' }
+    { nombre: 'tipo', label: 'Tipo de Rol', tipo: 'text', requerido: true }
   ];
 
   const handleSuccess = () => {

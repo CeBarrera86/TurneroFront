@@ -1,5 +1,13 @@
 import React from 'react';
-import { Table, TableHead, TableRow, TableCell, TableBody, IconButton, Box } from '@mui/material';
+import {
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  IconButton,
+  Box,
+} from '@mui/material';
 import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
 
 const TablaListado = ({ columns, rows, onEdit, onDelete, maxWidth }) => {
@@ -8,9 +16,9 @@ const TablaListado = ({ columns, rows, onEdit, onDelete, maxWidth }) => {
       <Table>
         <TableHead>
           <TableRow>
-            {columns.map((col) => (
-              <TableCell key={col} align="center">
-                {col}
+            {columns.map(({ label }) => (
+              <TableCell key={label} align="center">
+                {label}
               </TableCell>
             ))}
             <TableCell align="center">Acciones</TableCell>
@@ -19,9 +27,9 @@ const TablaListado = ({ columns, rows, onEdit, onDelete, maxWidth }) => {
         <TableBody>
           {rows.map((row) => (
             <TableRow key={row.id}>
-              {columns.map((col) => (
-                <TableCell key={col} align="center">
-                  {row[col.toLowerCase()]}
+              {columns.map(({ key }) => (
+                <TableCell key={key} align="center">
+                  {row[key] ?? '—'}
                 </TableCell>
               ))}
               <TableCell align="center">

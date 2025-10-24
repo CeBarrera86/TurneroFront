@@ -6,6 +6,9 @@ import Home from './vistas/Home.jsx';
 import Roles from './vistas/roles/Roles.jsx';
 import CrearRol from './vistas/roles/CrearRol.jsx';
 import EditarRol from './vistas/roles/EditarRol.jsx';
+import Sectores from './vistas/sectores/Sectores.jsx';
+import CrearSector from './vistas/sectores/CrearSector.jsx';
+import EditarSector from './vistas/sectores/EditarSector.jsx';
 import Login from './vistas/Login.jsx';
 import ComponentePrincipal from './components/layouts/ComponentePrincipal.jsx';
 import { useAuth } from './context/AuthContext';
@@ -50,6 +53,30 @@ const router = createBrowserRouter([
         element: (
           <AdminRoute>
             <EditarRol />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: 'sectores',
+        element: (
+          <AdminRoute>
+            <Sectores />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: 'sectores/crear',
+        element: (
+          <AdminRoute>
+            <CrearSector />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: 'sectores/editar/:id',
+        element: (
+          <AdminRoute>
+            <EditarSector />
           </AdminRoute>
         ),
       },

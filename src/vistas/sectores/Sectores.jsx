@@ -4,31 +4,41 @@ import { useOutletContext, useNavigate } from 'react-router-dom';
 import NuevoButton from '../../components/botones/NuevoButton';
 import TablaListado from '../../components/tablas/TablaListado';
 import ErrorDialog from '../../components/dialogos/ErrorDialog';
-import { getRoles, deleteRol } from '../../services/rolService';
+import { getSectores, deleteSector } from '../../services/sectorService';
 
-const Roles = () => {
+const Sectores = () => {
   const { setTitulo } = useOutletContext();
-  const [roles, setRoles] = useState([]);
+  const [sectores, setSectores] = useState([]);
   const [errorDialog, setErrorDialog] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
-    setTitulo('Roles');
+    setTitulo('Sectores');
     const token = sessionStorage.getItem('token');
-    getRoles(token)
-      .then(setRoles)
-      .catch((err) => console.error('Error al cargar roles:', err));
+    getSectores(token)
+      .then((data) => {
+        const sectoresConPadre = data.map((s) => ({
+          ...s,
+          nombrePadre: s.padre?.nombre || '—',
+          letra: s.letra || '—',
+          nombre: s.nombre || '—',
+          descripcion: s.descripcion || '—',
+          activo: s.activo ? 'Sí' : 'No',
+        }));
+        setSectores(sectoresConPadre);
+      })
+      .catch((err) => console.error('Error al cargar sectores:', err));
   }, [setTitulo]);
 
   const handleEdit = (id) => {
-    navigate(`/roles/editar/${id}`);
+    navigate(`/sectores/editar/${id}`);
   };
 
   const handleDelete = async (id) => {
     const token = sessionStorage.getItem('token');
     try {
-      await deleteRol(id, token);
-      setRoles((prev) => prev.filter((r) => r.id !== id));
+      await deleteSector(id, token);
+      setSectores((prev) => prev.filter((s) => s.id !== id));
     } catch (err) {
       setErrorDialog(err.message);
     }
@@ -36,34 +46,42 @@ const Roles = () => {
 
   const columns = [
     { label: 'ID', key: 'id' },
-    { label: 'Tipo', key: 'tipo' }
+    { label: 'Padre', key: 'nombrePadre' },
+    { label: 'Letra', key: 'letra' },
+    { label: 'Nombre', key: 'nombre' },
+    { label: 'Descripción', key: 'descripcion' },
+    { label: 'Activo', key: 'activo' }
   ];
 
   return (
     <Container>
       <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-        <Box sx={{ width: '100%', maxWidth: 400 }}>
+        <Box sx={{ width: '100%', maxWidth: 1000 }}>
           <Grid container alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}>
             <Grid>
               <Typography variant="h5">Listado</Typography>
             </Grid>
             <Grid>
-              <NuevoButton label="Nuevo Rol" to="/roles/crear" />
+              <NuevoButton label="Nuevo Sector" to="/sectores/crear" />
             </Grid>
           </Grid>
 
           <TablaListado
             columns={columns}
-            rows={roles}
+            rows={sectores}
             onEdit={handleEdit}
             onDelete={handleDelete}
           />
         </Box>
       </Box>
 
-      <ErrorDialog open={!!errorDialog} mensaje={errorDialog} onClose={() => setErrorDialog('')} />
+      <ErrorDialog
+        open={!!errorDialog}
+        mensaje={errorDialog}
+        onClose={() => setErrorDialog('')}
+      />
     </Container>
   );
 };
 
-export default Roles;
+export default Sectores;
