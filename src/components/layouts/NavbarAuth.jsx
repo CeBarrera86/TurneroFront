@@ -48,7 +48,7 @@ const GradientLine = styled(Box)(({ theme }) => {
   };
 });
 
-const NavbarAuth = () => {
+const NavbarAuth = ({ titulo }) => {
   const [name, setName] = useState('Desconocido');
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -79,8 +79,9 @@ const NavbarAuth = () => {
     <StyledAppBar position="static">
       <Toolbar sx={{ minHeight: '60px', height: '60px' }}>
         <Typography variant="h5" sx={{ flexGrow: 1 }}>
-          Atención al Público
+          {titulo || 'Atención al Público'}
         </Typography>
+
 
         <Box sx={{ display: 'flex', alignItems: 'center', mr: 2 }}>
           <InputBase

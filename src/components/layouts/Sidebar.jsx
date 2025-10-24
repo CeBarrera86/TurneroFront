@@ -55,6 +55,8 @@ const StyledDrawer = styled(Drawer)(({ theme, iscollapsed }) => ({
 }));
 
 const Sidebar = () => {
+  const rol = sessionStorage.getItem('rol');
+  const mostradorSector = parseInt(sessionStorage.getItem('mostradorSector'), 10);
   const location = useLocation();
   const [openSecciones, setOpenSecciones] = useState(false);
   const [openInstitucional, setOpenInstitucional] = useState(false);
@@ -82,16 +84,30 @@ const Sidebar = () => {
       icon: <AppsIcon />,
       path: '',
       children: [
-        { text: 'Cajas', icon: <DeskIcon />, path: '/cajas' },
-        { text: 'Usuarios', icon: <GroupIcon />, path: '/usuarios' },
-        { text: 'Reclamos', icon: <ReceiptLongIcon />, path: '/reclamos' },
+        ...(rol === 'Admin'
+          ? [
+            { text: 'Cajas', icon: <DeskIcon />, path: '/cajas' },
+            { text: 'Usuarios', icon: <GroupIcon />, path: '/usuarios' },
+            { text: 'Reclamos', icon: <ReceiptLongIcon />, path: '/reclamos' },
+          ]
+          : rol === 'Usuario'
+            ? [
+              ...(mostradorSector === 1 ? [{ text: 'Cajas', icon: <DeskIcon />, path: '/cajas' }] : []),
+              ...(mostradorSector === 3 ? [{ text: 'Usuarios', icon: <GroupIcon />, path: '/usuarios' }] : []),
+              ...(mostradorSector === 4 ? [{ text: 'Reclamos', icon: <ReceiptLongIcon />, path: '/reclamos' }] : []),
+            ]
+            : []),
       ],
     },
-    { text: 'Estados', icon: <TimelineIcon />, path: '/estados' },
-    { text: 'Mostradores', icon: <DeskIcon />, path: '/mostradores' },
-    { text: 'Publicidades', icon: <TvIcon />, path: '/publicidades' },
-    { text: 'Roles', icon: <ContentPasteIcon />, path: '/roles' },
-    { text: 'Sectores', icon: <LocationOnIcon />, path: '/sectores' },
+    ...(rol === 'Admin' ? [
+      { text: 'Estados', icon: <TimelineIcon />, path: '/estados' },
+      { text: 'Mostradores', icon: <DeskIcon />, path: '/mostradores' },
+      { text: 'Publicidades', icon: <TvIcon />, path: '/publicidades' },
+      { text: 'Roles', icon: <ContentPasteIcon />, path: '/roles' },
+      { text: 'Sectores', icon: <LocationOnIcon />, path: '/sectores' },
+    ] : rol === 'Jefe' ? [
+      { text: 'Publicidades', icon: <TvIcon />, path: '/publicidades' },
+    ] : []),
   ];
 
   const isSeccionesActive = ['/cajas', '/usuarios', '/reclamos'].includes(location.pathname);
