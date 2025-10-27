@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-const CrearForm = ({ campos, endpoint, onSuccess, volverA }) => {
+const CrearForm = ({ campos, onSubmit, onSuccess, volverA }) => {
   const [formData, setFormData] = useState(() => {
     const inicial = {};
     campos.forEach(({ nombre, tipo, default: def }) => {
@@ -40,17 +40,7 @@ const CrearForm = ({ campos, endpoint, onSuccess, volverA }) => {
     });
 
     try {
-      const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) throw new Error(`Error ${res.status}`);
-      const data = await res.json();
+      const data = await onSubmit(payload, token);
       if (onSuccess) onSuccess(data);
     } catch (err) {
       console.error('Error al enviar formulario:', err);

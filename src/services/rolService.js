@@ -1,5 +1,7 @@
+import { config } from '../config/config';
+
 export const getRoles = async (token) => {
-  const res = await fetch('http://172.16.14.87:5144/api/Rol', {
+  const res = await fetch(`${config.urlBase}${config.apiPrefix}/Rol`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -7,7 +9,7 @@ export const getRoles = async (token) => {
 };
 
 export const deleteRol = async (id, token) => {
-  const res = await fetch(`http://172.16.14.87:5144/api/Rol/${id}`, {
+  const res = await fetch(`${config.urlBase}${config.apiPrefix}/Rol/${id}`, {
     method: 'DELETE',
     headers: { Authorization: `Bearer ${token}` },
   });

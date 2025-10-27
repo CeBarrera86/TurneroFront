@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
 import { useOutletContext, useNavigate } from 'react-router-dom';
+import { createSector } from '../../services/sectorService';
 import CrearForm from '../../components/formularios/CrearForm';
 import { getSectores } from '../../services/sectorService';
 
@@ -30,6 +31,25 @@ const CrearSector = () => {
     { nombre: 'activo', label: 'Activo', tipo: 'checkbox', default: true }
   ];
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const token = sessionStorage.getItem('token');
+
+    const payload = { ...formData };
+    if (payload.padreId === '') payload.padreId = null;
+    if (typeof payload.activo === 'string') payload.activo = payload.activo === 'true';
+    ['letra', 'nombre', 'descripcion'].forEach((campo) => {
+      if (payload[campo] === '') payload[campo] = null;
+    });
+
+    try {
+      const data = await createSector(payload, token);
+      if (onSuccess) onSuccess(data);
+    } catch (err) {
+      console.error('Error al crear sector:', err);
+    }
+  };
+
   const handleSuccess = () => {
     navigate('/sectores');
   };
@@ -38,7 +58,7 @@ const CrearSector = () => {
     <Box sx={{ maxWidth: 500, mx: 'auto' }}>
       <CrearForm
         campos={campos}
-        endpoint="http://172.16.14.87:5144/api/Sector"
+        onSubmit={(payload, token) => createSector(payload, token)}
         onSuccess={handleSuccess}
         volverA="/sectores"
       />
