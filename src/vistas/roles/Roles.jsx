@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Container, Typography, Grid, Box } from '@mui/material';
 import { useOutletContext, useNavigate } from 'react-router-dom';
 import NuevoButton from '../../components/botones/NuevoButton';
 import TablaListado from '../../components/tablas/TablaListado';
+import ConfirmDialog from '../../components/dialogos/ConfirmDialog';
 import ErrorDialog from '../../components/dialogos/ErrorDialog';
 import { getRoles, deleteRol } from '../../services/rolService';
 
@@ -10,6 +11,9 @@ const Roles = () => {
   const { setTitulo } = useOutletContext();
   const [roles, setRoles] = useState([]);
   const [errorDialog, setErrorDialog] = useState('');
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [rolAEliminar, setRolAEliminar] = useState(null);
+  const nuevoRolRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,13 +28,21 @@ const Roles = () => {
     navigate(`/roles/editar/${id}`);
   };
 
-  const handleDelete = async (id) => {
+  const handleDeleteClick = (id) => {
+    setRolAEliminar(id);
+    setConfirmDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
     const token = sessionStorage.getItem('token');
     try {
-      await deleteRol(id, token);
-      setRoles((prev) => prev.filter((r) => r.id !== id));
+      await deleteRol(rolAEliminar, token);
+      setRoles((prev) => prev.filter((r) => r.id !== rolAEliminar));
     } catch (err) {
       setErrorDialog(err.message);
+    } finally {
+      setConfirmDialogOpen(false);
+      setRolAEliminar(null);
     }
   };
 
@@ -48,7 +60,7 @@ const Roles = () => {
               <Typography variant="h5">Listado</Typography>
             </Grid>
             <Grid>
-              <NuevoButton label="Nuevo Rol" to="/roles/crear" />
+              <NuevoButton ref={nuevoRolRef} label="Nuevo Rol" to="/roles/crear" /> {/* ✅ ref aplicado */}
             </Grid>
           </Grid>
 
@@ -56,10 +68,15 @@ const Roles = () => {
             columns={columns}
             rows={roles}
             onEdit={handleEdit}
-            onDelete={handleDelete}
+            onDelete={handleDeleteClick}
           />
         </Box>
       </Box>
+
+      <ConfirmDialog open={confirmDialogOpen} title="¿Eliminar rol?" message="Esta acción no se puede deshacer." onConfirm={handleConfirmDelete} onCancel={() => {
+        setConfirmDialogOpen(false);
+        setTimeout(() => { nuevoRolRef.current?.focus(); }, 0);
+      }} />
 
       <ErrorDialog open={!!errorDialog} mensaje={errorDialog} onClose={() => setErrorDialog('')} />
     </Container>

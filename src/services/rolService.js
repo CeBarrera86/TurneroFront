@@ -1,5 +1,23 @@
 import { config } from '../config/config';
 
+export const createRol = async (payload, token) => {
+  const res = await fetch(`${config.urlBase}${config.apiPrefix}/Rol`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`Error ${res.status}: ${errorText}`);
+  }
+
+  return res.json();
+};
+
 export const getRoles = async (token) => {
   const res = await fetch(`${config.urlBase}${config.apiPrefix}/Rol`, {
     headers: { Authorization: `Bearer ${token}` },

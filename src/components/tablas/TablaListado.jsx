@@ -16,25 +16,17 @@ const TablaListado = ({ columns, rows, onEdit, onDelete, maxWidth }) => {
       <Table>
         <TableHead>
           <TableRow>
-            {columns.map(({ label }) => (
-              <TableCell key={label} align="center">
-                {label}
-              </TableCell>
-            ))}
+            {columns.map(({ label }) => (<TableCell key={label} align="center"> {label} </TableCell>))}
             <TableCell align="center">Acciones</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {rows.map((row) => (
             <TableRow key={row.id}>
-              {columns.map(({ key }) => (
-                <TableCell key={key} align="center">
-                  {row[key] ?? '—'}
-                </TableCell>
-              ))}
+              {columns.map(({ key }) => (<TableCell key={key} align="center"> {row[key] ?? '—'} </TableCell>))}
               <TableCell align="center">
                 <IconButton onClick={() => onEdit(row.id)}><EditIcon /></IconButton>
-                <IconButton onClick={() => onDelete(row.id)}><DeleteIcon /></IconButton>
+                <IconButton onClick={() => onDelete(row.id)} > <DeleteIcon /> </IconButton>
               </TableCell>
             </TableRow>
           ))}
