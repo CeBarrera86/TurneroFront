@@ -3,6 +3,9 @@ import corpicoTheme from './theme/Themes';
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
 import AdminRoute from './components/routing/AdminRoute.jsx';
 import Home from './vistas/Home.jsx';
+import Estados from './vistas/estados/Estados.jsx';
+import CrearEstado from './vistas/estados/CrearEstado.jsx';
+import EditarEstado from './vistas/estados/EditarEstado.jsx';
 import Roles from './vistas/roles/Roles.jsx';
 import CrearRol from './vistas/roles/CrearRol.jsx';
 import EditarRol from './vistas/roles/EditarRol.jsx';
@@ -13,79 +16,30 @@ import Login from './vistas/Login.jsx';
 import ComponentePrincipal from './components/layouts/ComponentePrincipal.jsx';
 import { useAuth } from './context/AuthContext';
 
-// 🔐 Protección de rutas
+// Protección de rutas
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
+  if (!isAuthenticated) { return <Navigate to="/login" replace />; }
   return children;
 };
 
 const router = createBrowserRouter([
   {
-    path: '/',
-    element: (
-      <ProtectedRoute>
-        <ComponentePrincipal />
-      </ProtectedRoute>
-    ),
+    path: '/', element: (<ProtectedRoute> <ComponentePrincipal /> </ProtectedRoute>),
     children: [
       { path: '', element: <Home /> },
-      {
-        path: 'roles',
-        element: (
-          <AdminRoute>
-            <Roles />
-          </AdminRoute>
-        ),
-      },
-      {
-        path: 'roles/crear',
-        element: (
-          <AdminRoute>
-            <CrearRol />
-          </AdminRoute>
-        ),
-      },
-      {
-        path: 'roles/editar/:id',
-        element: (
-          <AdminRoute>
-            <EditarRol />
-          </AdminRoute>
-        ),
-      },
-      {
-        path: 'sectores',
-        element: (
-          <AdminRoute>
-            <Sectores />
-          </AdminRoute>
-        ),
-      },
-      {
-        path: 'sectores/crear',
-        element: (
-          <AdminRoute>
-            <CrearSector />
-          </AdminRoute>
-        ),
-      },
-      {
-        path: 'sectores/editar/:id',
-        element: (
-          <AdminRoute>
-            <EditarSector />
-          </AdminRoute>
-        ),
-      },
+      { path: 'estados', element: (<AdminRoute> <Estados /> </AdminRoute>), },
+      { path: 'estados/crear', element: (<AdminRoute> <CrearEstado /> </AdminRoute>), },
+      { path: 'estados/editar/:id', element: (<AdminRoute> <EditarEstado /> </AdminRoute>), },
+      { path: 'roles', element: (<AdminRoute> <Roles /> </AdminRoute>), },
+      { path: 'roles/crear', element: (<AdminRoute> <CrearRol /> </AdminRoute>), },
+      { path: 'roles/editar/:id', element: (<AdminRoute> <EditarRol /> </AdminRoute>), },
+      { path: 'sectores', element: (<AdminRoute> <Sectores /> </AdminRoute>), },
+      { path: 'sectores/crear', element: (<AdminRoute> <CrearSector /> </AdminRoute>), },
+      { path: 'sectores/editar/:id', element: (<AdminRoute> <EditarSector /> </AdminRoute>), },
     ],
   },
-  {
-    path: '/login',
-    element: <Login />,
-  },
+  { path: '/login', element: <Login />, },
 ]);
 
 const App = () => {

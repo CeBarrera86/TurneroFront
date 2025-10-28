@@ -77,7 +77,6 @@ const Roles = () => {
         setConfirmDialogOpen(false);
         setTimeout(() => { nuevoRolRef.current?.focus(); }, 0);
       }} />
-
       <ErrorDialog open={!!errorDialog} mensaje={errorDialog} onClose={() => setErrorDialog('')} />
     </Container>
   );

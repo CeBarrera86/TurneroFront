@@ -1,23 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import {
-  TextField,
-  Button,
-  Grid,
-  Checkbox,
-  FormControlLabel,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-} from '@mui/material';
+import { TextField, Button, Grid, Checkbox, FormControlLabel, FormControl, InputLabel, Select, MenuItem, } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-const EditarForm = ({ campos, endpoint, id, onSuccess, volverA }) => {
+const EditarForm = ({ campos, id, onSubmit, getPorId, onSuccess, volverA }) => {
   const [formData, setFormData] = useState(() => {
     const inicial = {};
-    campos.forEach(({ nombre, tipo, default: def }) => {
-      inicial[nombre] = tipo === 'checkbox' ? def ?? false : '';
-    });
+    campos.forEach(({ nombre, tipo, default: def }) => { inicial[nombre] = tipo === 'checkbox' ? def ?? false : ''; });
     return inicial;
   });
 
@@ -25,15 +13,7 @@ const EditarForm = ({ campos, endpoint, id, onSuccess, volverA }) => {
 
   useEffect(() => {
     const token = sessionStorage.getItem('token');
-    fetch(`${endpoint}/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error(`Error ${res.status}`);
-        return res.json();
-      })
+    getPorId(id, token)
       .then((data) => {
         const actualizado = {};
         campos.forEach(({ nombre, tipo }) => {
@@ -46,7 +26,7 @@ const EditarForm = ({ campos, endpoint, id, onSuccess, volverA }) => {
         setFormData(actualizado);
       })
       .catch((err) => console.error('Error al cargar datos:', err));
-  }, [endpoint, id, campos]);
+  }, [getPorId, id, campos]);
 
   const handleChange = (e, nombreCampo, tipo) => {
     const valor = tipo === 'checkbox' ? e.target.checked : e.target.value;
@@ -56,35 +36,20 @@ const EditarForm = ({ campos, endpoint, id, onSuccess, volverA }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = sessionStorage.getItem('token');
-
     const payload = { ...formData };
     if (payload.padreId === '') payload.padreId = null;
     if (typeof payload.activo === 'string') payload.activo = payload.activo === 'true';
-    ['letra', 'nombre', 'descripcion'].forEach((campo) => {
-      if (payload[campo] === '') payload[campo] = null;
-    });
+    ['letra', 'nombre', 'descripcion'].forEach((campo) => { if (payload[campo] === '') payload[campo] = null; });
 
     try {
-      const res = await fetch(`${endpoint}/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) throw new Error(`Error ${res.status}`);
-      const data = await res.json();
+      const data = await onSubmit(id, payload, token);
       if (onSuccess) onSuccess(data);
     } catch (err) {
       console.error('Error al actualizar:', err);
     }
   };
 
-  const handleCancel = () => {
-    navigate(volverA || -1);
-  };
+  const handleCancel = () => { navigate(volverA || -1); };
 
   return (
     <form onSubmit={handleSubmit}>
@@ -102,29 +67,16 @@ const EditarForm = ({ campos, endpoint, id, onSuccess, volverA }) => {
             )}
             {tipo === 'checkbox' && (
               <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={formData[nombre]}
-                    onChange={(e) => handleChange(e, nombre, tipo)}
-                  />
-                }
+                control={<Checkbox checked={formData[nombre]} onChange={(e) => handleChange(e, nombre, tipo)} />}
                 label={label}
               />
             )}
             {tipo === 'select' && (
               <FormControl fullWidth>
                 <InputLabel>{label}</InputLabel>
-                <Select
-                  value={formData[nombre]}
-                  onChange={(e) => handleChange(e, nombre, tipo)}
-                  label={label}
-                >
+                <Select value={formData[nombre]} onChange={(e) => handleChange(e, nombre, tipo)} label={label} >
                   <MenuItem value="">Sin padre</MenuItem>
-                  {opciones?.map((op) => (
-                    <MenuItem key={op.value} value={op.value}>
-                      {op.label}
-                    </MenuItem>
-                  ))}
+                  {opciones?.map((op) => (<MenuItem key={op.value} value={op.value}> {op.label} </MenuItem>))}
                 </Select>
               </FormControl>
             )}

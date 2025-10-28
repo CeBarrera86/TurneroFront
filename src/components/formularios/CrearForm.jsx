@@ -15,9 +15,7 @@ import { useNavigate } from 'react-router-dom';
 const CrearForm = ({ campos, onSubmit, onSuccess, volverA }) => {
   const [formData, setFormData] = useState(() => {
     const inicial = {};
-    campos.forEach(({ nombre, tipo, default: def }) => {
-      inicial[nombre] = tipo === 'checkbox' ? def ?? false : '';
-    });
+    campos.forEach(({ nombre, tipo, default: def }) => { inicial[nombre] = tipo === 'checkbox' ? def ?? false : ''; });
     return inicial;
   });
 
@@ -31,13 +29,10 @@ const CrearForm = ({ campos, onSubmit, onSuccess, volverA }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = sessionStorage.getItem('token');
-
     const payload = { ...formData };
     if (payload.padreId === '') payload.padreId = null;
     if (typeof payload.activo === 'string') payload.activo = payload.activo === 'true';
-    ['letra', 'nombre', 'descripcion'].forEach((campo) => {
-      if (payload[campo] === '') payload[campo] = null;
-    });
+    ['letra', 'nombre', 'descripcion'].forEach((campo) => { if (payload[campo] === '') payload[campo] = null; });
 
     try {
       const data = await onSubmit(payload, token);
@@ -47,9 +42,7 @@ const CrearForm = ({ campos, onSubmit, onSuccess, volverA }) => {
     }
   };
 
-  const handleCancel = () => {
-    navigate(volverA || -1);
-  };
+  const handleCancel = () => { navigate(volverA || -1); };
 
   return (
     <form onSubmit={handleSubmit}>
@@ -67,28 +60,17 @@ const CrearForm = ({ campos, onSubmit, onSuccess, volverA }) => {
             )}
             {tipo === 'checkbox' && (
               <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={formData[nombre]}
-                    onChange={(e) => handleChange(e, nombre, tipo)}
-                  />
-                }
+                control={<Checkbox checked={formData[nombre]} onChange={(e) => handleChange(e, nombre, tipo)} />}
                 label={label}
               />
             )}
             {tipo === 'select' && (
               <FormControl fullWidth>
                 <InputLabel>{label}</InputLabel>
-                <Select
-                  value={formData[nombre]}
-                  onChange={(e) => handleChange(e, nombre, tipo)}
-                  label={label}
-                >
+                <Select value={formData[nombre]} onChange={(e) => handleChange(e, nombre, tipo)} label={label} >
                   <MenuItem value="">Sin padre</MenuItem>
                   {opciones?.map((op) => (
-                    <MenuItem key={op.value} value={op.value}>
-                      {op.label}
-                    </MenuItem>
+                    <MenuItem key={op.value} value={op.value}> {op.label} </MenuItem>
                   ))}
                 </Select>
               </FormControl>

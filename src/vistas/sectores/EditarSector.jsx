@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
 import { useOutletContext, useNavigate, useParams } from 'react-router-dom';
 import EditarForm from '../../components/formularios/EditarForm';
-import { getSectores } from '../../services/sectorService';
+import { getSectores, getSectorPorId, updateSector } from '../../services/sectorService';
 
 const EditarSector = () => {
   const { setTitulo } = useOutletContext();
@@ -15,9 +15,7 @@ const EditarSector = () => {
     const token = sessionStorage.getItem('token');
     getSectores(token)
       .then((data) => {
-        const padres = data
-          .filter((s) => s.padreId === null && s.id !== parseInt(id))
-          .map((s) => ({ value: s.id, label: s.nombre }));
+        const padres = data.filter((s) => s.padreId === null && s.id !== parseInt(id)).map((s) => ({ value: s.id, label: s.nombre }));
         setOpcionesPadre(padres);
       })
       .catch((err) => console.error('Error al cargar padres:', err));
@@ -31,16 +29,15 @@ const EditarSector = () => {
     { nombre: 'activo', label: 'Activo', tipo: 'checkbox' }
   ];
 
-  const handleSuccess = () => {
-    navigate('/sectores');
-  };
+  const handleSuccess = () => { navigate('/sectores'); };
 
   return (
     <Box sx={{ maxWidth: 500, mx: 'auto' }}>
       <EditarForm
         campos={campos}
-        endpoint="http://172.16.14.87:5144/api/Sector"
         id={id}
+        getPorId={getSectorPorId}
+        onSubmit={(id, payload, token) => updateSector(id, payload, token)}
         onSuccess={handleSuccess}
         volverA="/sectores"
       />

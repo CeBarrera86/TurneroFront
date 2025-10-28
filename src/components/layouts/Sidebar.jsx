@@ -50,7 +50,7 @@ const StyledDrawer = styled(Drawer)(({ theme, iscollapsed }) => ({
     boxShadow: '0 4px 20px 0 rgba(0, 0, 0, .14), 0 7px 10px -5px rgba(0, 0, 0, .4)',
     position: 'fixed',
     transition: 'width 0.3s ease',
-    overflowX: 'hidden', // ✅ evita scroll horizontal
+    overflowX: 'hidden',
   },
 }));
 
@@ -86,15 +86,15 @@ const Sidebar = () => {
       children: [
         ...(rol === 'Admin'
           ? [
-            { text: 'Cajas', icon: <DeskIcon />, path: '/cajas' },
-            { text: 'Usuarios', icon: <GroupIcon />, path: '/usuarios' },
-            { text: 'Reclamos', icon: <ReceiptLongIcon />, path: '/reclamos' },
+            { text: 'Cajas', icon: <DeskIcon />, path: '/seccion/cajas' },
+            { text: 'Usuarios', icon: <GroupIcon />, path: '/seccion/usuarios' },
+            { text: 'Reclamos', icon: <ReceiptLongIcon />, path: '/seccion/reclamos' },
           ]
           : rol === 'Usuario'
             ? [
-              ...(mostradorSector === 1 ? [{ text: 'Cajas', icon: <DeskIcon />, path: '/cajas' }] : []),
-              ...(mostradorSector === 3 ? [{ text: 'Usuarios', icon: <GroupIcon />, path: '/usuarios' }] : []),
-              ...(mostradorSector === 4 ? [{ text: 'Reclamos', icon: <ReceiptLongIcon />, path: '/reclamos' }] : []),
+              ...(mostradorSector === 1 ? [{ text: 'Cajas', icon: <DeskIcon />, path: '/seccion/cajas' }] : []),
+              ...(mostradorSector === 3 ? [{ text: 'Usuarios', icon: <GroupIcon />, path: '/seccion/usuarios' }] : []),
+              ...(mostradorSector === 4 ? [{ text: 'Reclamos', icon: <ReceiptLongIcon />, path: '/seccion/reclamos' }] : []),
             ]
             : []),
       ],
@@ -105,6 +105,7 @@ const Sidebar = () => {
       { text: 'Publicidades', icon: <TvIcon />, path: '/publicidades' },
       { text: 'Roles', icon: <ContentPasteIcon />, path: '/roles' },
       { text: 'Sectores', icon: <LocationOnIcon />, path: '/sectores' },
+      { text: 'Usuarios', icon: <GroupIcon />, path: '/usuarios' },
     ] : rol === 'Jefe' ? [
       { text: 'Publicidades', icon: <TvIcon />, path: '/publicidades' },
     ] : []),

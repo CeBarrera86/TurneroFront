@@ -34,9 +34,7 @@ const Sectores = () => {
       .catch((err) => console.error('Error al cargar sectores:', err));
   }, [setTitulo]);
 
-  const handleEdit = (id) => {
-    navigate(`/sectores/editar/${id}`);
-  };
+  const handleEdit = (id) => { navigate(`/sectores/editar/${id}`); };
 
   const handleDeleteClick = (id) => {
     setSectorAEliminar(id);
@@ -87,24 +85,11 @@ const Sectores = () => {
         </Box>
       </Box>
 
-      <ConfirmDialog
-        open={confirmDialogOpen}
-        title="¿Eliminar sector?"
-        message="Esta acción no se puede deshacer."
-        onConfirm={handleConfirmDelete}
-        onCancel={() => {
-          setConfirmDialogOpen(false);
-          setTimeout(() => {
-            nuevoSectorRef.current?.focus();
-          }, 0);
-        }}
-      />
-
-      <ErrorDialog
-        open={!!errorDialog}
-        mensaje={errorDialog}
-        onClose={() => setErrorDialog('')}
-      />
+      <ConfirmDialog open={confirmDialogOpen} title="¿Eliminar sector?" message="Esta acción no se puede deshacer." onConfirm={handleConfirmDelete} onCancel={() => {
+        setConfirmDialogOpen(false);
+        setTimeout(() => { nuevoSectorRef.current?.focus(); }, 0);
+      }} />
+      <ErrorDialog open={!!errorDialog} mensaje={errorDialog} onClose={() => setErrorDialog('')} />
     </Container>
   );
 };
