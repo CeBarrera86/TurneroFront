@@ -15,6 +15,9 @@ import EditarRol from './vistas/roles/EditarRol.jsx';
 import Sectores from './vistas/sectores/Sectores.jsx';
 import CrearSector from './vistas/sectores/CrearSector.jsx';
 import EditarSector from './vistas/sectores/EditarSector.jsx';
+import Usuarios from './vistas/usuarios/Usuarios.jsx';
+import CrearUsuario from './vistas/usuarios/CrearUsuario.jsx';
+import EditarUsuario from './vistas/usuarios/EditarUsuario.jsx';
 import Login from './vistas/Login.jsx';
 import ComponentePrincipal from './components/layouts/ComponentePrincipal.jsx';
 import { useAuth } from './context/AuthContext';
@@ -43,6 +46,9 @@ const router = createBrowserRouter([
       { path: 'sectores', element: (<AdminRoute> <Sectores /> </AdminRoute>), },
       { path: 'sectores/crear', element: (<AdminRoute> <CrearSector /> </AdminRoute>), },
       { path: 'sectores/editar/:id', element: (<AdminRoute> <EditarSector /> </AdminRoute>), },
+      { path: 'usuarios', element: (<AdminRoute> <Usuarios /> </AdminRoute>), },
+      { path: 'usuarios/crear', element: (<AdminRoute> <CrearUsuario /> </AdminRoute>), },
+      { path: 'usuarios/editar/:id', element: (<AdminRoute> <EditarUsuario /> </AdminRoute>), },
     ],
   },
   { path: '/login', element: <Login />, },
