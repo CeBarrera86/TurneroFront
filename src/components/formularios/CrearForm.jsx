@@ -58,6 +58,16 @@ const CrearForm = ({ campos, onSubmit, onSuccess, volverA }) => {
                 required={requerido}
               />
             )}
+            {tipo === 'number' && (
+              <TextField
+                fullWidth
+                label={label}
+                type="number"
+                value={formData[nombre]}
+                onChange={(e) => handleChange(e, nombre, tipo)}
+                required={requerido}
+              />
+            )}
             {tipo === 'checkbox' && (
               <FormControlLabel
                 control={<Checkbox checked={formData[nombre]} onChange={(e) => handleChange(e, nombre, tipo)} />}
@@ -68,10 +78,8 @@ const CrearForm = ({ campos, onSubmit, onSuccess, volverA }) => {
               <FormControl fullWidth>
                 <InputLabel>{label}</InputLabel>
                 <Select value={formData[nombre]} onChange={(e) => handleChange(e, nombre, tipo)} label={label} >
-                  <MenuItem value="">Sin padre</MenuItem>
-                  {opciones?.map((op) => (
-                    <MenuItem key={op.value} value={op.value}> {op.label} </MenuItem>
-                  ))}
+                  <MenuItem value="">-- Elija opción --</MenuItem>
+                  {opciones?.map((op) => (<MenuItem key={op.value} value={op.value}> {op.label} </MenuItem>))}
                 </Select>
               </FormControl>
             )}

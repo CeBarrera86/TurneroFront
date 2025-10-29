@@ -8,6 +8,12 @@ export const getSectores = async (token) => {
   return res.json();
 };
 
+export const getSectoresActivosPadres = async (token) => {
+  const res = await fetch(`${BASE_URL}/activos-padres`, { headers: { Authorization: `Bearer ${token}` } });
+  if (!res.ok) throw new Error('Error al obtener sectores activos padres');
+  return await res.json();
+};
+
 export const getSectorPorId = async (id, token) => {
   const res = await fetch(`${BASE_URL}/${id}`, { headers: { Authorization: `Bearer ${token}` }, });
   if (!res.ok) throw new Error(`Error al obtener sector: ${res.status}`);

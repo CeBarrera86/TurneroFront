@@ -6,6 +6,9 @@ import Home from './vistas/Home.jsx';
 import Estados from './vistas/estados/Estados.jsx';
 import CrearEstado from './vistas/estados/CrearEstado.jsx';
 import EditarEstado from './vistas/estados/EditarEstado.jsx';
+import Mostradores from './vistas/mostradores/Mostradores.jsx';
+import CrearMostrador from './vistas/mostradores/CrearMostrador.jsx';
+import EditarMostrador from './vistas/mostradores/EditarMostrador.jsx';
 import Roles from './vistas/roles/Roles.jsx';
 import CrearRol from './vistas/roles/CrearRol.jsx';
 import EditarRol from './vistas/roles/EditarRol.jsx';
@@ -31,6 +34,9 @@ const router = createBrowserRouter([
       { path: 'estados', element: (<AdminRoute> <Estados /> </AdminRoute>), },
       { path: 'estados/crear', element: (<AdminRoute> <CrearEstado /> </AdminRoute>), },
       { path: 'estados/editar/:id', element: (<AdminRoute> <EditarEstado /> </AdminRoute>), },
+      { path: 'mostradores', element: (<AdminRoute> <Mostradores /> </AdminRoute>), },
+      { path: 'mostradores/crear', element: (<AdminRoute> <CrearMostrador /> </AdminRoute>), },
+      { path: 'mostradores/editar/:id', element: (<AdminRoute> <EditarMostrador /> </AdminRoute>), },
       { path: 'roles', element: (<AdminRoute> <Roles /> </AdminRoute>), },
       { path: 'roles/crear', element: (<AdminRoute> <CrearRol /> </AdminRoute>), },
       { path: 'roles/editar/:id', element: (<AdminRoute> <EditarRol /> </AdminRoute>), },
