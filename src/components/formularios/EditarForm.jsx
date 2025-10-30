@@ -53,7 +53,7 @@ const EditarForm = ({ campos, id, onSubmit, getPorId, onSuccess, volverA }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <Grid container spacing={2}>
+      <Grid container spacing={2} justifyContent="center">
         {campos.map(({ nombre, label, tipo, opciones, requerido }) => (
           <Grid size={{ xs: 8 }} key={nombre}>
             {tipo === 'text' && (
@@ -92,7 +92,7 @@ const EditarForm = ({ campos, id, onSubmit, getPorId, onSuccess, volverA }) => {
             )}
           </Grid>
         ))}
-        <Grid size={{ xs: 8 }} sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+        <Grid size={{ xs: 8 }} sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
           <Button variant="outlined" onClick={handleCancel}>Cancelar</Button>
           <Button variant="contained" type="submit">Guardar</Button>
         </Grid>

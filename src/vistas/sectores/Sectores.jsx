@@ -66,7 +66,7 @@ const Sectores = () => {
   return (
     <Container>
       <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-        <Box sx={{ width: '100%', maxWidth: 1000 }}>
+        <Box sx={{ width: '100%', maxWidth: 1100 }}>
           <Grid container alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}>
             <Grid>
               <Typography variant="h5">Listado</Typography>
