@@ -55,7 +55,7 @@ const TablaCargaArchivo = ({ label, nombre, maxSizeMB = 15, onChange }) => {
     onChange(archivosConEstado);
   };
 
-  const handleToggleActivo = (index) => {
+  const handleCheckActivo = (index) => {
     const actualizados = archivos.map((f, i) =>
       i === index ? { ...f, activa: !f.activa } : f
     );
@@ -125,7 +125,7 @@ const TablaCargaArchivo = ({ label, nombre, maxSizeMB = 15, onChange }) => {
                     <TableCell>
                       <Checkbox
                         checked={archivo.activa}
-                        onChange={() => handleToggleActivo(index)}
+                        onChange={() => handleCheckActivo(index)}
                       />
                     </TableCell>
                     <TableCell>{archivo.sizeMB.toFixed(2)}</TableCell>

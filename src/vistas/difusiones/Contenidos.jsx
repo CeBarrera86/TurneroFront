@@ -5,7 +5,7 @@ import NuevoButton from '../../components/botones/NuevoButton';
 import ConfirmDialog from '../../components/dialogos/ConfirmDialog';
 import ErrorDialog from '../../components/dialogos/ErrorDialog';
 import TablaContenidos from '../../components/tablas/TablaContenidos';
-import { getContenidos, deleteContenido } from '../../services/contenidoService';
+import { getContenidos, deleteContenido, updateContenido } from '../../services/contenidoService';
 
 const Contenidos = () => {
   const { setTitulo } = useOutletContext();
@@ -26,16 +26,16 @@ const Contenidos = () => {
   const cargarArchivos = async () => {
     const token = sessionStorage.getItem('token');
     try {
-      const res = await getContenidos(token, page, rowsPerPage);
-      setArchivos(res.archivos);
-      setTotal(res.total);
+      const res = await getContenidos(token);
+      setArchivos(res);
+      setTotal(res.length);
     } catch (err) {
       setErrorDialog(err.message);
     }
   };
 
-  const handleDeleteClick = (nombre) => {
-    setArchivoAEliminar(nombre);
+  const handleDeleteClick = (id) => {
+    setArchivoAEliminar(id);
     setConfirmDialogOpen(true);
   };
 
@@ -52,10 +52,13 @@ const Contenidos = () => {
     }
   };
 
-  const handleToggleActivo = async (nombre) => {
+  const handleCheckActivo = async (id) => {
     const token = sessionStorage.getItem('token');
+    const contenido = archivos.find(a => a.id === id);
+    if (!contenido) return;
+
     try {
-      await toggleContenido(nombre, token);
+      await updateContenido(id, { activa: !contenido.activa }, token);
       cargarArchivos();
     } catch (err) {
       setErrorDialog(err.message);
@@ -85,7 +88,7 @@ const Contenidos = () => {
               setRowsPerPage(parseInt(e.target.value, 10));
               setPage(1);
             }}
-            onToggleActivo={handleToggleActivo}
+            onToggleActivo={handleCheckActivo}
             onDelete={handleDeleteClick}
           />
         </Box>

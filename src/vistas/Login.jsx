@@ -7,6 +7,7 @@ import LoginForm from '../components/formularios/LoginForm';
 import appTheme from '../theme/Themes';
 import backgroundImage from '../assets/img/corpico_central.jpg';
 import { useAuth } from '../context/AuthContext';
+import { config } from '../config/config';
 
 const RootContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -42,7 +43,7 @@ const Login = () => {
     setMessage('');
 
     try {
-      const response = await fetch('http://172.16.14.87:5144/api/token/login', {
+      const response = await fetch(`${config.urlBase}${config.apiPrefix}/token/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

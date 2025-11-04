@@ -12,8 +12,9 @@ import {
   Box
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { config } from '../../config/config';
 
-const TablaDifusiones = ({
+const TablaContenidos = ({
   archivos,
   page,
   rowsPerPage,
@@ -24,14 +25,21 @@ const TablaDifusiones = ({
   onDelete
 }) => {
   const renderMiniatura = (archivo) => {
-    const ext = archivo.nombre.split('.').pop().toLowerCase();
-    const base = '/contenido/miniatura/';
-    if (['jpg', 'jpeg', 'png', 'gif'].includes(ext)) {
-      return <img src={`${base}${archivo.nombre}`} alt={archivo.nombre} style={{ width: 80 }} />;
-    } else if (['mp4', 'webm', 'ogg', 'avi'].includes(ext)) {
-      return <img src={`${base}${archivo.nombre.replace(/\.[^/.]+$/, '.jpg')}`} alt={archivo.nombre} style={{ width: 80 }} />;
-    }
-    return null;
+    const fullUrl = `${config.urlBase}${archivo.urlMiniatura}`;
+    const altText = archivo.tipo === 'video'
+      ? `${archivo.nombre.replace(/\.[^/.]+$/, '')}.jpg`
+      : archivo.nombre;
+    return (
+      <img
+        src={fullUrl}
+        alt={altText}
+        style={{ width: 80 }}
+        onError={(e) => {
+          e.target.onerror = null;
+          e.target.src = '/assets/img/fallback.png';
+        }}
+      />
+    );
   };
 
   return (
@@ -47,19 +55,19 @@ const TablaDifusiones = ({
         </TableHead>
         <TableBody>
           {Array.isArray(archivos) && archivos.map((archivo) => (
-            <TableRow key={archivo.nombre}>
+            <TableRow key={archivo.id}>
               <TableCell align="center">{renderMiniatura(archivo)}</TableCell>
               <TableCell align="center">{archivo.nombre}</TableCell>
               <TableCell align="center">
                 <Checkbox
                   checked={archivo.activa}
-                  onChange={() => onToggleActivo(archivo.nombre)}
+                  onChange={() => onToggleActivo(archivo.id)}
                   color="primary"
                 />
               </TableCell>
               <TableCell align="center">
                 <Tooltip title="Eliminar">
-                  <IconButton onClick={() => onDelete(archivo.nombre)} color="error">
+                  <IconButton onClick={() => onDelete(archivo.id)} color="error">
                     <DeleteIcon />
                   </IconButton>
                 </Tooltip>
@@ -82,4 +90,4 @@ const TablaDifusiones = ({
   );
 };
 
-export default TablaDifusiones;
+export default TablaContenidos;

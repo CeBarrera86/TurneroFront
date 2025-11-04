@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
       timeout = setTimeout(() => {
         logout();
         alert('Sesión cerrada por inactividad');
-      }, 10 * 60 * 1000); // 10 minutos
+      }, 15 * 60 * 1000); // 10 minutos
     };
 
     const events = ['mousemove', 'keydown', 'click', 'scroll'];

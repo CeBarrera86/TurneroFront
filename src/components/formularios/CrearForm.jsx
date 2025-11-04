@@ -49,10 +49,6 @@ const CrearForm = ({ campos, onSubmit, onSuccess, volverA }) => {
     }
 
     try {
-      console.log('Contenido del FormData:');
-      for (let [key, value] of formDataFinal.entries()) {
-        console.log(`${key}:`, value);
-      }
       const data = await onSubmit(formDataFinal, token);
       if (onSuccess) onSuccess(data);
     } catch (err) {

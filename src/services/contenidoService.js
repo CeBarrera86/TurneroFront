@@ -2,11 +2,11 @@ import { config } from '../config/config';
 
 const BASE_URL = `${config.urlBase}${config.apiPrefix}/Contenido`;
 
-export const getContenidos = async (token, page = 1, pageSize = 10) => {
-  const res = await fetch(`${BASE_URL}?page=${page}&pageSize=${pageSize}`, {
+export const getContenidos = async (token) => {
+  const res = await fetch(`${BASE_URL}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
-  if (!res.ok) throw new Error(`Error al obtener contenidos: ${res.status}`);
+  if (!res.ok) throw new Error(`Error al obtener contenidos sincronizados: ${res.status}`);
   return res.json();
 };
 
@@ -22,7 +22,7 @@ export const createContenido = async (formData, token) => {
   const res = await fetch(BASE_URL, {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}` },
-    body: formData, // No se usa Content-Type para FormData
+    body: formData,
   });
   if (!res.ok) {
     const errorText = await res.text();
