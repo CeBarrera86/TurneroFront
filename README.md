@@ -1,12 +1,62 @@
-# React + Vite
+# TurneroFront (React + Vite)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend en React + Vite, organizado por capas y features para escalar con reglas estrictas de importación.
 
-Currently, two official plugins are available:
+## Requisitos
+- Node.js 18+ (recomendado)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Instalación rápida
+1. Clonar el repositorio.
+2. Instalar dependencias: npm install
+3. Ejecutar: npm run dev
 
-## Expanding the ESLint configuration
+## Scripts principales
+- npm run dev: entorno de desarrollo
+- npm run build: build de producción
+- npm run lint: validación ESLint (arquitectura + buenas prácticas)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Arquitectura (resumen)
+El proyecto está organizado por capas y features para separar responsabilidades:
+
+- app: configuración global, router y providers.
+- features: módulos funcionales (usuarios, roles, sectores, etc.).
+	- pages: vistas (UI y orquestación)
+	- components: UI específica del feature
+	- hooks: lógica reutilizable del feature
+	- controllers: acceso a datos (services) y coordinación de casos de uso
+- shared: componentes/recursos reutilizables y configuración compartida.
+- data: services de API (fetch/axios).
+- domain: modelos y tipos del dominio.
+- assets: recursos estáticos.
+
+## Reglas de arquitectura (importaciones)
+Se validan con ESLint (plugin boundaries):
+
+- No hay imports cruzados entre features (solo dentro del mismo feature).
+- Pages/Components/Hooks no importan services directamente.
+- Controllers son el único punto de acceso a services.
+- Shared no depende de features ni de data.
+
+Estas reglas aseguran un proyecto modular, escalable y mantenible.
+
+## Diagrama simple de capas
+
+```mermaid
+flowchart TB
+	App[app] --> Features[features]
+	Features --> Pages[features/pages]
+	Features --> Components[features/components]
+	Features --> Hooks[features/hooks]
+	Pages --> Controllers[features/controllers]
+	Components --> Controllers
+	Hooks --> Controllers
+	Controllers --> Data[data/services]
+	Data --> Domain[domain]
+	Features --> Shared[shared]
+	Shared --> Domain
+	Assets[assets]
+```
+
+
+
+
