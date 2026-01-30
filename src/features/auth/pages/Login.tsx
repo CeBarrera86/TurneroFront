@@ -7,7 +7,8 @@ import LoginForm from '@/shared/components/formularios/LoginForm';
 import appTheme from '@/shared/theme/Themes';
 import backgroundImage from '@/assets/img/corpico_central.jpg';
 import { useAuth } from '@/shared/auth/useAuth';
-import { config } from '@/shared/config/config';
+import { getFriendlyErrorMessage, NetworkError } from '@/data/http/httpClient';
+import { HttpError, loginRequest } from '@/features/auth/controllers/authController';
 
 const RootContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -43,25 +44,19 @@ const Login = () => {
     setMessage('');
 
     try {
-      const response = await fetch(`${config.urlBase}${config.apiPrefix}/token/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-      });
+      const data = await loginRequest(username, password);
 
-      if (!response.ok) {
-        throw new Error('Credenciales inválidas');
-      }
-
-      const data = await response.json();
       login(data);
       setMessage('Inicio de sesión exitoso. Redirigiendo...');
       navigate('/');
     } catch (error) {
-      const messageText = error instanceof Error ? error.message : 'Error inesperado';
-      setMessage(`Error: ${messageText}`);
+      if (error instanceof HttpError && error.status === 401) {
+        setMessage('Error: Credenciales inválidas');
+      } else if (error instanceof NetworkError) {
+        setMessage(`Error: ${error.message}`);
+      } else {
+        setMessage(`Error: ${getFriendlyErrorMessage(error)}`);
+      }
       setTimeout(() => setMessage(''), 3000);
     } finally {
       setLoading(false);

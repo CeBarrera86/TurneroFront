@@ -39,6 +39,12 @@ Se validan con ESLint (plugin boundaries):
 
 Estas reglas aseguran un proyecto modular, escalable y mantenible.
 
+## Variables de entorno (opcional)
+- VITE_API_BASE_URL: URL completa del backend (ej. http://172.16.14.87:5144).
+- VITE_DIR + VITE_PORT: alternativa para construir la URL base.
+- VITE_API_PREFIX: prefijo de API (por defecto /api).
+- VITE_API_TIMEOUT_MS: timeout por request en ms (por defecto 15000).
+
 ## Diagrama simple de capas
 
 ```mermaid

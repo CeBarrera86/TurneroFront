@@ -1,26 +1,16 @@
 import { config } from '@/shared/config/config';
+import { defaultRetryOptions, request } from '@/data/http/httpClient';
 import type { Id } from '@/domain/models/common';
 import type { TicketApiItem, TicketDetalle } from '@/domain/models/ticket';
 
 const baseUrl = `${config.urlBase}${config.apiPrefix}/ticket`;
 
-const withAuth = (token: string) => ({ Authorization: `Bearer ${token}` });
-
 export const llamarTicket = async (id: Id, token: string): Promise<TicketDetalle> => {
-  const res = await fetch(`${baseUrl}/${id}/llamar`, {
-    method: 'POST',
-    headers: withAuth(token),
-  });
-  if (!res.ok) throw new Error(await res.text());
-  return res.json();
+  return request<TicketDetalle>(`${baseUrl}/${id}/llamar`, { method: 'POST', token });
 };
 
 export const getTicketsDisponibles = async (token: string): Promise<TicketApiItem[]> => {
-  const res = await fetch(`${baseUrl}/disponibles`, {
-    headers: withAuth(token),
-  });
-  if (!res.ok) throw new Error(await res.text());
-  return res.json();
+  return request<TicketApiItem[]>(`${baseUrl}/disponibles`, { token, ...defaultRetryOptions });
 };
 
 export const getTicketsFiltrados = async (
@@ -28,43 +18,28 @@ export const getTicketsFiltrados = async (
   token: string
 ): Promise<TicketApiItem[]> => {
   const hoy = new Date().toISOString().split('T')[0];
-  const res = await fetch(
+  return request<TicketApiItem[]>(
     `${baseUrl}/filtrados?fecha=${hoy}&sectorIdOrigen=${sectorId}&estadoId=4`,
-    {
-      headers: withAuth(token),
-    }
+    { token, ...defaultRetryOptions }
   );
-  if (!res.ok) throw new Error(await res.text());
-  return res.json();
 };
 
 export const eliminarTicket = async (id: Id, token: string): Promise<void> => {
   const payload = { estadoId: 5 };
-  const res = await fetch(`${baseUrl}/${id}`, {
+  await request<void>(`${baseUrl}/${id}`, {
     method: 'PATCH',
-    headers: {
-      ...withAuth(token),
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(payload),
+    token,
+    body: payload,
+    responseType: 'void',
   });
-  if (!res.ok) throw new Error(await res.text());
 };
 
 export const getTicketDetalle = async (id: Id, token: string): Promise<TicketDetalle> => {
-  const res = await fetch(`${baseUrl}/${id}`, {
-    headers: withAuth(token),
-  });
-  if (!res.ok) throw new Error(await res.text());
-  return res.json();
+  return request<TicketDetalle>(`${baseUrl}/${id}`, { token, ...defaultRetryOptions });
 };
 
 export const finalizarAtencion = async (id: Id, token: string): Promise<void> => {
-  const res = await fetch(`${baseUrl}/${id}/finalizar`, {
-    method: 'POST',
-    headers: withAuth(token),
-  });
-  if (!res.ok) throw new Error(await res.text());
+  await request<void>(`${baseUrl}/${id}/finalizar`, { method: 'POST', token, responseType: 'void' });
 };
 
 export const derivarTicket = async (
@@ -77,23 +52,14 @@ export const derivarTicket = async (
   if (usuarioId) {
     payload.usuarioId = usuarioId;
   }
-
-  const res = await fetch(`${baseUrl}/${id}/derivar`, {
+  await request<void>(`${baseUrl}/${id}/derivar`, {
     method: 'POST',
-    headers: {
-      ...withAuth(token),
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(payload),
+    token,
+    body: payload,
+    responseType: 'void',
   });
-
-  if (!res.ok) throw new Error(await res.text());
 };
 
 export const rellamarTicket = async (id: Id, token: string): Promise<void> => {
-  const res = await fetch(`${baseUrl}/${id}/rellamar`, {
-    method: 'POST',
-    headers: withAuth(token),
-  });
-  if (!res.ok) throw new Error(await res.text());
+  await request<void>(`${baseUrl}/${id}/rellamar`, { method: 'POST', token, responseType: 'void' });
 };
