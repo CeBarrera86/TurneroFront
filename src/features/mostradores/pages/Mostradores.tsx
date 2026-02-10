@@ -26,7 +26,19 @@ const Mostradores = () => {
     setTitulo('Mostradores');
     const token = sessionStorage.getItem('token') ?? '';
     getMostradores(token)
-      .then(setMostradores)
+      .then((data) => {
+        const mostradoresConSector = data.map((m) => {
+          const sectores = m.sectores ?? [];
+          const sectorNombre = sectores.length > 0
+            ? sectores.map((s) => s.nombre ?? '—').join(', ')
+            : (m.sectorNombre ?? '—');
+          return {
+            ...m,
+            sectorNombre,
+          };
+        });
+        setMostradores(mostradoresConSector);
+      })
       .catch((err) => console.error('Error al cargar mostradores:', err));
   }, [setTitulo]);
 
@@ -65,7 +77,7 @@ const Mostradores = () => {
   return (
     <Container>
       <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-        <Box sx={{ width: '100%', maxWidth: 700 }}>
+        <Box sx={{ width: '100%', maxWidth: 800 }}>
           <Grid container alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}>
             <Grid>
               <Typography variant="h5">Listado</Typography>

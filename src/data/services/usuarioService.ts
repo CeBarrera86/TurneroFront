@@ -6,7 +6,25 @@ import type { Rol, Usuario } from '@/domain/models/usuario';
 const BASE_URL = `${config.urlBase}${config.apiPrefix}/Usuario`;
 
 export const getUsuarios = async (token: string): Promise<Usuario[]> => {
-  return request<Usuario[]>(BASE_URL, { token, ...defaultRetryOptions });
+  type PagedResponse<T> = {
+    data: T[];
+    page: number;
+    pageSize: number;
+    total: number;
+  };
+
+  const response = await request<Usuario[] | PagedResponse<Usuario>>(BASE_URL, {
+    token,
+    ...defaultRetryOptions,
+  });
+  console.log('[getUsuarios] response:', response);
+
+  const usuarios = Array.isArray(response) ? response : response.data;
+  return usuarios.map((u) => ({
+    ...u,
+    rolTipo: u.rolTipo ?? u.rolNombre,
+    rolNombre: u.rolNombre ?? u.rolTipo,
+  }));
 };
 
 export const getUsuarioPorId = async (id: Id, token: string): Promise<Usuario> => {

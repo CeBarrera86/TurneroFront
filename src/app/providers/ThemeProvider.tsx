@@ -1,20 +1,47 @@
-import { useMemo, type ReactNode } from 'react';
+import { createContext, useCallback, useMemo, useState, type ReactNode } from 'react';
 import { CssBaseline, ThemeProvider as MuiThemeProvider } from '@mui/material';
 import { esES } from '@mui/material/locale';
 import { createTheme } from '@mui/material/styles';
-import corpicoTheme from '@/shared/theme/Themes';
+import { createCorpicoTheme } from '@/shared/theme/Themes';
+
+type ThemeMode = 'light' | 'dark';
+
+interface ThemeModeContextValue {
+  mode: ThemeMode;
+  toggleMode: () => void;
+}
+
+export const ThemeModeContext = createContext<ThemeModeContextValue>({
+  mode: 'light',
+  toggleMode: () => undefined,
+});
 
 interface ThemeProviderProps {
   children: ReactNode;
 }
 
 export const ThemeProvider = ({ children }: ThemeProviderProps) => {
-  const theme = useMemo(() => createTheme(corpicoTheme, esES), []);
+  const [mode, setMode] = useState<ThemeMode>(() => {
+    const stored = localStorage.getItem('themeMode');
+    return stored === 'dark' ? 'dark' : 'light';
+  });
+
+  const toggleMode = useCallback(() => {
+    setMode((prev) => {
+      const next = prev === 'light' ? 'dark' : 'light';
+      localStorage.setItem('themeMode', next);
+      return next;
+    });
+  }, []);
+
+  const theme = useMemo(() => createTheme(createCorpicoTheme(mode), esES), [mode]);
 
   return (
-    <MuiThemeProvider theme={theme}>
-      <CssBaseline />
-      {children}
-    </MuiThemeProvider>
+    <ThemeModeContext.Provider value={{ mode, toggleMode }}>
+      <MuiThemeProvider theme={theme}>
+        <CssBaseline />
+        {children}
+      </MuiThemeProvider>
+    </ThemeModeContext.Provider>
   );
 };

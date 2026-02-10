@@ -6,7 +6,19 @@ import type { Sector } from '@/domain/models/sector';
 const BASE_URL = `${config.urlBase}${config.apiPrefix}/Sector`;
 
 export const getSectores = async (token: string): Promise<Sector[]> => {
-  return request<Sector[]>(BASE_URL, { token, ...defaultRetryOptions });
+  type PagedResponse<T> = {
+    data: T[];
+    page: number;
+    pageSize: number;
+    total: number;
+  };
+
+  const response = await request<Sector[] | PagedResponse<Sector>>(BASE_URL, {
+    token,
+    ...defaultRetryOptions,
+  });
+  console.log('[getSectores] response:', response);
+  return Array.isArray(response) ? response : response.data;
 };
 
 export const getSectoresActivosPadres = async (token: string): Promise<Sector[]> => {

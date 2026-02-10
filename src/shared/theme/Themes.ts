@@ -1,4 +1,4 @@
-import { createTheme } from '@mui/material/styles';
+import { createTheme, type ThemeOptions } from '@mui/material/styles';
 
 export const corpicoPalette = {
   azul: '#3e64ac',
@@ -10,14 +10,14 @@ export const corpicoPalette = {
   celeste: '#5fc3e6',
 };
 
-const corpicoTheme = createTheme({
+export const createCorpicoTheme = (mode: 'light' | 'dark'): ThemeOptions => ({
   palette: {
-    mode: 'light',
+    mode,
     corpico: {
       ...corpicoPalette,
       terciario: {
         main: corpicoPalette.amarillo,
-        contrastText: '#000',
+        contrastText: mode === 'dark' ? '#111' : '#000',
         light: '#ffe957',
         dark: '#ccb018',
       },
@@ -69,15 +69,15 @@ const corpicoTheme = createTheme({
       900: '#212121',
     },
     background: {
-      default: '#e0e0e0',
-      paper: '#ffffff',
-      layout: '#f2f2f2',
+      default: mode === 'dark' ? '#111418' : '#e0e0e0',
+      paper: mode === 'dark' ? '#151a1f' : '#ffffff',
+      layout: mode === 'dark' ? '#0f1317' : '#f2f2f2',
     },
     text: {
-      primary: 'rgba(0, 0, 0, 0.87)',
-      secondary: 'rgba(0, 0, 0, 0.6)',
-      disabled: 'rgba(0, 0, 0, 0.38)',
-      third: 'rgba(0, 0, 0, 0.7)',
+      primary: mode === 'dark' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0, 0, 0, 0.87)',
+      secondary: mode === 'dark' ? 'rgba(255, 255, 255, 0.65)' : 'rgba(0, 0, 0, 0.6)',
+      disabled: mode === 'dark' ? 'rgba(255, 255, 255, 0.38)' : 'rgba(0, 0, 0, 0.38)',
+      third: mode === 'dark' ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)',
     },
   },
   typography: {
@@ -107,7 +107,7 @@ const corpicoTheme = createTheme({
   },
   components: {
     MuiCssBaseline: {
-      styleOverrides: {
+      styleOverrides: (theme) => ({
         html: {
           height: '100%',
           margin: 0,
@@ -117,11 +117,13 @@ const corpicoTheme = createTheme({
           height: '100%',
           margin: 0,
           padding: 0,
+          backgroundColor: theme.palette.background.default,
+          color: theme.palette.text.primary,
         },
         '#root': {
           height: '100%',
         },
-      },
+      }),
     },
     MuiCardHeader: {
       styleOverrides: {
@@ -143,12 +145,14 @@ const corpicoTheme = createTheme({
         root: ({ theme }) => ({
           borderRadius: '20px',
           boxShadow:
-            '0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12)',
-          backgroundColor: theme.palette.grey[100],
-          color: theme.palette.grey[900],
+            theme.palette.mode === 'dark'
+              ? '0 6px 20px rgba(0, 0, 0, 0.35)'
+              : '0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12)',
+          backgroundColor: theme.palette.background.paper,
+          color: theme.palette.text.primary,
           wordWrap: 'break-word',
           backgroundClip: 'border-box',
-          border: `1px solid ${theme.palette.grey[300]}`,
+          border: `1px solid ${theme.palette.divider}`,
           display: 'flex',
           flexDirection: 'column',
           minWidth: 0,
@@ -192,10 +196,16 @@ const corpicoTheme = createTheme({
     },
     MuiPaper: {
       styleOverrides: {
-        root: {
+        root: ({ theme }) => ({
           borderRadius: 12,
-          boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.05)',
-        },
+          backgroundColor: theme.palette.background.paper,
+          color: theme.palette.text.primary,
+          boxShadow:
+            theme.palette.mode === 'dark'
+              ? '0px 6px 18px rgba(0, 0, 0, 0.35)'
+              : '0px 2px 10px rgba(0, 0, 0, 0.05)',
+          border: theme.palette.mode === 'dark' ? `1px solid ${theme.palette.divider}` : 'none',
+        }),
       },
     },
     MuiAppBar: {
@@ -207,5 +217,7 @@ const corpicoTheme = createTheme({
     },
   },
 });
+
+export const corpicoTheme = createTheme(createCorpicoTheme('light'));
 
 export default corpicoTheme;

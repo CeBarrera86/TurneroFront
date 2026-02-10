@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import {
   AppBar,
   Toolbar,
   Typography,
-  InputBase,
   IconButton,
   Avatar,
   Box,
@@ -11,17 +10,19 @@ import {
   Menu,
   MenuItem,
 } from '@mui/material';
-import { Search as SearchIcon, Person as PersonIcon } from '@mui/icons-material';
+import { DarkMode as DarkModeIcon, LightMode as LightModeIcon, Person as PersonIcon } from '@mui/icons-material';
+import { ThemeModeContext } from '@/app/providers/ThemeProvider';
+import { alpha, useTheme } from '@mui/material/styles';
 
 const StyledAppBar = styled(AppBar)(({ theme }) => {
   return {
-    backgroundColor: theme.palette.success.main,
-    color: theme.palette.success.contrastText,
-    boxShadow: '0 4px 20px 0 rgba(0, 0, 0, .14), 0 7px 10px -5px rgba(0, 0, 0, .4)',
-    borderRadius: '12px',
+    backgroundColor: theme.palette.background.paper,
+    color: theme.palette.text.primary,
+    boxShadow: '0 10px 30px rgba(16, 24, 40, 0.08)',
+    borderRadius: 12,
     position: 'relative',
     overflow: 'hidden',
-    height: '65px',
+    height: '70px',
   };
 });
 
@@ -56,6 +57,8 @@ const NavbarAuth = ({ titulo }: NavbarAuthProps) => {
   const [name, setName] = useState('Desconocido');
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
+  const { mode, toggleMode } = useContext(ThemeModeContext);
+  const theme = useTheme();
 
   useEffect(() => {
     const storedName = sessionStorage.getItem('nombre');
@@ -81,36 +84,73 @@ const NavbarAuth = ({ titulo }: NavbarAuthProps) => {
 
   return (
     <StyledAppBar position="static">
-      <Toolbar sx={{ minHeight: '60px', height: '60px' }}>
-        <Typography variant="h5" sx={{ flexGrow: 1 }}>
-          {titulo || 'Atención al Público'}
-        </Typography>
-
-        <Box sx={{ display: 'flex', alignItems: 'center', mr: 2 }}>
-          <InputBase
-            placeholder="Buscar Ticket..."
-            sx={{ border: '1px solid #ccc', borderRadius: '20px', padding: '4px 12px', width: '200px' }}
-          />
-          <IconButton
-            sx={{ ml: 1, color: 'white', backgroundColor: 'corpico.verde', '&:hover': { backgroundColor: 'corpico.verde' } }}
+      <Toolbar sx={{ minHeight: '56px', height: '56px' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1,
+            flexGrow: 1,
+          }}
+        >
+          <Box
+            sx={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 1,
+              px: 2,
+              py: 0.5,
+              borderRadius: 999,
+              border: '1px solid',
+              borderColor: 'success.main',
+              bgcolor: alpha(theme.palette.success.main, theme.palette.mode === 'dark' ? 0.22 : 0.18),
+            }}
           >
-            <SearchIcon />
-          </IconButton>
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              {titulo || 'Atención al Público'}
+            </Typography>
+          </Box>
         </Box>
 
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Typography sx={{ mr: 1 }}>Hola {name}</Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+          <Box sx={{ width: 1, height: 28, bgcolor: 'divider' }} />
+          <Box sx={{ textAlign: 'right' }}>
+            <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>
+              Bienvenido,
+            </Typography>
+            <Typography variant="body2" sx={{ fontWeight: 600 }}>
+              {name}
+            </Typography>
+          </Box>
+          
           <IconButton
             onClick={handleClick}
             size="small"
-            sx={{ ml: 2, p: 0 }}
+            sx={{ p: 0 }}
             aria-controls={open ? 'account-menu' : undefined}
             aria-haspopup="true"
             aria-expanded={open ? 'true' : undefined}
           >
-            <Avatar sx={{ bgcolor: 'grey' }}>
+            <Avatar sx={{ bgcolor: 'success.main' }}>
               <PersonIcon />
             </Avatar>
+          </IconButton>
+          <IconButton
+            size="small"
+            onClick={toggleMode}
+            sx={{
+              bgcolor: 'background.paper',
+              border: '1px solid',
+              borderColor: 'divider',
+              boxShadow: '0 6px 16px rgba(16, 24, 40, 0.08)',
+            }}
+            aria-label={mode === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+          >
+            {mode === 'dark' ? (
+              <LightModeIcon fontSize="small" sx={{ color: theme.palette.warning.main }} />
+            ) : (
+              <DarkModeIcon fontSize="small" />
+            )}
           </IconButton>
         </Box>
         <Menu

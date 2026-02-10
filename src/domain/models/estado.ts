@@ -2,5 +2,8 @@ import type { Id } from './common';
 
 export interface Estado {
   id?: Id;
-  nombre?: string;
+  letra?: string;
+  descripcion?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }

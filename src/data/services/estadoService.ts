@@ -5,8 +5,19 @@ import type { Estado } from '@/domain/models/estado';
 
 const BASE_URL = `${config.urlBase}${config.apiPrefix}/Estado`;
 
+type PagedResponse<T> = {
+  data: T[];
+  page: number;
+  pageSize: number;
+  total: number;
+};
+
 export const getEstados = async (token: string): Promise<Estado[]> => {
-  return request<Estado[]>(BASE_URL, { token, ...defaultRetryOptions });
+  const response = await request<Estado[] | PagedResponse<Estado>>(BASE_URL, {
+    token,
+    ...defaultRetryOptions,
+  });
+  return Array.isArray(response) ? response : response.data;
 };
 
 export const getEstadoPorId = async (id: Id, token: string): Promise<Estado> => {

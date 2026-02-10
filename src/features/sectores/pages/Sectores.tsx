@@ -32,9 +32,10 @@ const Sectores = () => {
     const token = sessionStorage.getItem('token') ?? '';
     getSectores(token)
       .then((data) => {
+        const nombrePorId = new Map(data.map((s) => [s.id, s.nombre ?? s.descripcion ?? '—']));
         const sectoresConPadre = data.map((s) => ({
           ...s,
-          nombrePadre: s.padre?.nombre || '—',
+          nombrePadre: s.padre?.nombre || (s.padreId ? (nombrePorId.get(s.padreId) ?? '—') : '—'),
           letra: s.letra || '—',
           nombre: s.nombre || '—',
           descripcion: s.descripcion || '—',

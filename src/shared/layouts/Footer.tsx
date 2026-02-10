@@ -5,11 +5,11 @@ const StyledFooter = styled(Box)(({ theme }) => {
   return {
     backgroundColor: theme.palette.corpico.terciario.main,
     color: theme.palette.corpico.terciario.contrastText,
-    boxShadow: '0 4px 20px 0 rgba(0, 0, 0, .14), 0 7px 10px -5px rgba(0, 0, 0, .4)',
-    borderRadius: '12px',
+    boxShadow: '0 10px 30px rgba(16, 24, 40, 0.08)',
+    borderRadius: 12,
     position: 'relative',
     overflow: 'hidden',
-    height: '65px',
+    height: '70px',
     display: 'flex',
     alignItems: 'center',
   };

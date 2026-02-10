@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { List } from '@mui/material';
+import { Box, List, Typography } from '@mui/material';
 import SidebarItem from './SidebarItem';
 import { getSidebarItems, type SidebarItemConfig } from './sidebarConfig';
 
@@ -20,22 +20,40 @@ const SidebarMenu = ({ isCollapsed }: SidebarMenuProps) => {
   }, [isSeccionesActive]);
 
   const menuItems: SidebarItemConfig[] = getSidebarItems();
+  const mainItems = menuItems.filter((item) => ['Institucional', 'Secciones'].includes(item.text));
+  const systemItems = menuItems.filter((item) => !['Institucional', 'Secciones'].includes(item.text));
 
   return (
-    <List>
-      {menuItems.map((item, index) => (
-        <SidebarItem
-          key={index}
-          item={item}
-          isCollapsed={isCollapsed}
-          location={location}
-          openSecciones={openSecciones}
-          openInstitucional={openInstitucional}
-          setOpenSecciones={setOpenSecciones}
-          setOpenInstitucional={setOpenInstitucional}
-        />
-      ))}
-    </List>
+    <Box sx={{ minHeight: 0 }}>
+      <List>
+        {mainItems.map((item, index) => (
+          <SidebarItem
+            key={index}
+            item={item}
+            isCollapsed={isCollapsed}
+            location={location}
+            openSecciones={openSecciones}
+            openInstitucional={openInstitucional}
+            setOpenSecciones={setOpenSecciones}
+            setOpenInstitucional={setOpenInstitucional}
+          />
+        ))}
+      </List>
+      <List>
+        {systemItems.map((item, index) => (
+          <SidebarItem
+            key={index}
+            item={item}
+            isCollapsed={isCollapsed}
+            location={location}
+            openSecciones={openSecciones}
+            openInstitucional={openInstitucional}
+            setOpenSecciones={setOpenSecciones}
+            setOpenInstitucional={setOpenInstitucional}
+          />
+        ))}
+      </List>
+    </Box>
   );
 };
 

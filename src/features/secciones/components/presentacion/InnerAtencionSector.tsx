@@ -1,10 +1,14 @@
-import React from 'react';
-import { Container, Typography, Box, Divider } from '@mui/material';
-import TablaTickets from '@/shared/components/tablas/TablaTickets';
+import React, { useMemo, useState } from 'react';
+import { Container, useTheme } from '@mui/material';
 import ConfirmDialog from '@/shared/components/dialogos/ConfirmDialog';
 import ErrorDialog from '@/shared/components/dialogos/ErrorDialog';
 import AtencionDialog from '@/shared/components/dialogos/AtencionDialog';
 import DerivarDialog from '@/shared/components/dialogos/DerivarDialog';
+import SeccionHeader from '@/shared/components/secciones/SeccionHeader';
+import TicketBoard from '@/shared/components/secciones/TicketBoard';
+import TicketColumn from '@/shared/components/secciones/TicketColumn';
+import TicketCard from '@/shared/components/secciones/TicketCard';
+import EmptyState from '@/shared/components/secciones/EmptyState';
 import type { Id } from '@/domain/models/common';
 import type { Sector } from '@/domain/models/sector';
 
@@ -82,24 +86,77 @@ const InnerAtencionSector = ({
   onUsuarioChange,
   onCancelDerivar,
 }: InnerAtencionSectorProps) => {
-  const columns = [
-    { label: 'Ticket', key: 'ticket' },
-    { label: 'Asociado', key: 'asociado' },
-  ];
+  const [searchValue, setSearchValue] = useState('');
+  const theme = useTheme();
+
+  const filteredTickets = useMemo(() => {
+    const query = searchValue.trim().toLowerCase();
+    if (!query) return tickets;
+    return tickets.filter((t) =>
+      `${t.ticket} ${t.asociado}`.toLowerCase().includes(query)
+    );
+  }, [tickets, searchValue]);
+
+  const disponibles = filteredTickets.slice(0, 3);
+  const derivados: TicketRow[] = [];
+  const total = filteredTickets.length + derivados.length;
 
   return (
-    <Container maxWidth="md" ref={nuevoTicketRef} tabIndex={-1}>
-      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-        <Box sx={{ width: '100%', maxWidth: 600 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
-            <Typography variant="h4">Tickets Disponibles</Typography>
-            <Typography> Total: ({tickets.length}) </Typography>
-          </Box>
-          <Divider sx={{ mb: 2 }} />
+    <Container
+      maxWidth="xl"
+      disableGutters
+      sx={{ px: { xs: 2, md: 3 } }}
+      ref={nuevoTicketRef}
+      tabIndex={-1}
+    >
+      <SeccionHeader
+        title="Gestión de tickets"
+        total={total}
+        searchValue={searchValue}
+        onSearchChange={setSearchValue}
+        searchPlaceholder="Buscar ticket..."
+      />
 
-          <TablaTickets columns={columns} rows={tickets} onCall={onCall} onDelete={onDelete} highlightedId={highlightedId ?? undefined} />
-        </Box>
-      </Box>
+      <TicketBoard>
+        <TicketColumn
+          title="Turno solicitado"
+          subtitle="Tickets en espera de atención"
+          accentColor={theme.palette.primary.main}
+        >
+          <EmptyState message="Sin turnos solicitados." />
+        </TicketColumn>
+
+        <TicketColumn
+          title="Disponibles"
+          subtitle="Listos para ser procesados"
+          count={filteredTickets.length}
+          accentColor={theme.palette.success.main}
+        >
+          {disponibles.length === 0 ? (
+            <EmptyState message="No se encontraron tickets." />
+          ) : (
+            disponibles.map((ticket) => (
+              <TicketCard
+                key={ticket.id}
+                ticket={ticket.ticket}
+                asociado={ticket.asociado}
+                highlighted={ticket.id === highlightedId}
+                onCall={() => onCall(ticket.id)}
+                onDelete={() => onDelete(ticket.id)}
+              />
+            ))
+          )}
+        </TicketColumn>
+
+        <TicketColumn
+          title="Derivados"
+          subtitle="Tickets de otras secciones"
+          count={derivados.length}
+          accentColor={theme.palette.info.main}
+        >
+          <EmptyState message="Sin tickets derivados." />
+        </TicketColumn>
+      </TicketBoard>
 
       <AtencionDialog
         open={dialogoAtencionOpen}

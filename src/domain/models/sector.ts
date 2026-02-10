@@ -8,4 +8,6 @@ export interface Sector {
   activo?: boolean;
   padreId?: Id | null;
   padre?: { nombre?: string };
+  createdAt?: string;
+  updatedAt?: string;
 }

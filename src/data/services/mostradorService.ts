@@ -5,8 +5,19 @@ import type { Mostrador } from '@/domain/models/mostrador';
 
 const BASE_URL = `${config.urlBase}${config.apiPrefix}/Mostrador`;
 
+type PagedResponse<T> = {
+  data: T[];
+  page: number;
+  pageSize: number;
+  total: number;
+};
+
 export const getMostradores = async (token: string): Promise<Mostrador[]> => {
-  return request<Mostrador[]>(BASE_URL, { token, ...defaultRetryOptions });
+  const response = await request<Mostrador[] | PagedResponse<Mostrador>>(BASE_URL, {
+    token,
+    ...defaultRetryOptions,
+  });
+  return Array.isArray(response) ? response : response.data;
 };
 
 export const getMostradorPorId = async (id: Id, token: string): Promise<Mostrador> => {
