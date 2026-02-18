@@ -18,22 +18,31 @@ const Estados = () => {
   const [estados, setEstados] = useState<Estado[]>([]);
   const [errorDialog, setErrorDialog] = useState('');
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
-  const [estadoAEliminar, setEstadoAEliminar] = useState<Id | null>(null);
+  const [estadoAEliminar, setEstadoAEliminar] = useState<string | null>(null);
   const nuevoEstadoRef = useRef<HTMLButtonElement | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     setTitulo('Estados');
     const token = sessionStorage.getItem('token') ?? '';
-    getEstados(token).then(setEstados).catch((err) => console.error('Error al cargar estados:', err));
+    getEstados(token)
+      .then((data) => {
+        // Mapear los datos para que coincidan las claves con las columnas de la tabla
+        const estadosMapeados = data.map((e: any) => ({
+          letra: e.TUE_LETRA,
+          descripcion: e.TUE_DESCRIPCION,
+        }));
+        setEstados(estadosMapeados);
+      })
+      .catch((err) => console.error('Error al cargar estados:', err));
   }, [setTitulo]);
 
-  const handleEdit = (id: Id) => {
-    navigate(`/estados/editar/${id}`);
+  const handleEdit = (letra: string) => {
+    navigate(`/turnero/estados/editar/${letra}`);
   };
 
-  const handleDeleteClick = (id: Id) => {
-    setEstadoAEliminar(id);
+  const handleDeleteClick = (letra: string) => {
+    setEstadoAEliminar(letra);
     setConfirmDialogOpen(true);
   };
 
@@ -42,7 +51,7 @@ const Estados = () => {
     if (!estadoAEliminar) return;
     try {
       await deleteEstado(estadoAEliminar, token);
-      setEstados((prev) => prev.filter((e) => e.id !== estadoAEliminar));
+      setEstados((prev) => prev.filter((e) => e.letra !== estadoAEliminar));
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Error desconocido';
       setErrorDialog(message);
@@ -53,7 +62,6 @@ const Estados = () => {
   };
 
   const columns: TablaColumn[] = [
-    { label: 'ID', key: 'id' },
     { label: 'Letra', key: 'letra' },
     { label: 'Descripción', key: 'descripcion' },
   ];
@@ -67,11 +75,11 @@ const Estados = () => {
               <Typography variant="h5">Listado</Typography>
             </Grid>
             <Grid>
-              <NuevoButton ref={nuevoEstadoRef} label="Nuevo Estado" to="/estados/crear" />
+              <NuevoButton ref={nuevoEstadoRef} label="Nuevo Estado" to="/turnero/estados/crear" />
             </Grid>
           </Grid>
 
-          <TablaListado columns={columns} rows={estados as any} onEdit={handleEdit} onDelete={handleDeleteClick} />
+          <TablaListado columns={columns} rows={estados as any} onEdit={handleEdit} onDelete={handleDeleteClick} rowKey="letra" />
         </Box>
       </Box>
 

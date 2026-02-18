@@ -1,15 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import {
-  llamarTicket,
   eliminarTicket,
-  getTicketDetalle,
   finalizarAtencion,
   derivarTicket,
   rellamarTicket,
   getSectores,
   getUsuariosPorSector,
+  createTurno,
 } from '@/features/secciones/controllers/seccionesController';
+import { getFriendlyErrorMessage } from '@/data/http/httpClient';
 import { useTicketsPorSector } from '@/features/secciones/hooks/useTicketsPorSector';
 import InnerAtencionSector from './InnerAtencionSector';
 import type { Id } from '@/domain/models/common';
@@ -51,6 +51,7 @@ const AtencionSector = ({ sectorId }: AtencionSectorProps) => {
   const [sectorDestino, setSectorDestino] = useState<Id | null>(null);
   const [usuarioDestino, setUsuarioDestino] = useState<Id | null>(null);
   const [highlightedId, setHighlightedId] = useState<Id | null>(null);
+  const [errorMessage, setErrorMessage] = useState('');
   const nuevoTicketRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -61,31 +62,28 @@ const AtencionSector = ({ sectorId }: AtencionSectorProps) => {
       .catch((err) => console.warn('Error al cargar sectores:', err));
   }, [setTitulo]);
 
-  const handleAtender = async (id: Id) => {
-    const token = sessionStorage.getItem('token') ?? '';
-    try {
-      const detalle: TicketDetalle = await getTicketDetalle(id, token);
-      setTicketSeleccionado({
-        id: detalle.id,
-        codigo: `${detalle.letra ?? ''}${detalle.numero ?? ''}`,
-        sector: detalle.sector?.nombre ?? '—',
-        cliente: detalle.cliente,
-        estado: detalle.estado?.descripcion ?? '—',
-      });
-      setDialogoAtencionOpen(true);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  // ...existing code...
 
   const handleCall = async (id: Id) => {
     const token = sessionStorage.getItem('token') ?? '';
+    if (token) {
+      try {
+        const payloadBase64 = token.split('.')[1] ?? '';
+        const payloadJson = atob(payloadBase64.replace(/-/g, '+').replace(/_/g, '/'));
+        const payload = JSON.parse(payloadJson) as Record<string, unknown>;
+        const puestoId = payload.puestoId ?? payload.PuestoId ?? payload['puesto_id'];
+      } catch (err) {
+        console.warn('[auth] No se pudo decodificar el token para leer puestoId.', err);
+      }
+    }
     try {
-      await llamarTicket(id, token);
+      await createTurno({ ticketId: id }, token);
       setHighlightedId(id);
       setTimeout(() => setHighlightedId(null), 3000);
-      await handleAtender(id);
+      await refetch();
     } catch (err) {
+      const message = getFriendlyErrorMessage(err);
+      setErrorMessage(message);
       console.error(`Error al llamar ticket ${id}:`, err);
     }
   };
@@ -199,6 +197,8 @@ const AtencionSector = ({ sectorId }: AtencionSectorProps) => {
       onSectorChange={setSectorDestino}
       onUsuarioChange={setUsuarioDestino}
       onCancelDerivar={cerrarDialogoDerivar}
+      errorMessage={errorMessage}
+      onCloseErrorMessage={() => setErrorMessage('')}
     />
   );
 };

@@ -1,4 +1,5 @@
 import React from 'react';
+import { getZonaId, getSectorId, getPermisoId } from '@/shared/utils/jwtUtils';
 import {
   Apps as AppsIcon,
   Phone as PhoneIcon,
@@ -29,8 +30,12 @@ export interface SidebarItemConfig {
 }
 
 export const getSidebarItems = (): SidebarItemConfig[] => {
-  const rol = sessionStorage.getItem('rol');
-  const mostradorSector = Number.parseInt(sessionStorage.getItem('mostradorSector') ?? '0', 10);
+  // Usar funciones utilitarias para obtener los datos del token
+  const zonaId = getZonaId();
+  const sectorId = getSectorId();
+  const permisoId = getPermisoId();
+
+  const esAdmin = Array.isArray(permisoId) ? permisoId.includes(1) : false;
 
   return [
     {
@@ -48,32 +53,28 @@ export const getSidebarItems = (): SidebarItemConfig[] => {
       text: 'Secciones',
       icon: <AppsIcon />,
       children: [
-        ...(rol === 'Admin'
+        ...(esAdmin
           ? [
               { text: 'Cajas', icon: <DeskIcon />, path: '/secciones/cajas' },
               { text: 'Usuarios', icon: <GroupIcon />, path: '/secciones/usuarios' },
               { text: 'Reclamos', icon: <ReceiptLongIcon />, path: '/secciones/reclamos' },
             ]
-          : rol === 'Usuario'
-          ? [
-              ...(mostradorSector === 1 ? [{ text: 'Cajas', icon: <DeskIcon />, path: '/secciones/cajas' }] : []),
-              ...(mostradorSector === 3 ? [{ text: 'Usuarios', icon: <GroupIcon />, path: '/secciones/usuarios' }] : []),
-              ...(mostradorSector === 4 ? [{ text: 'Reclamos', icon: <ReceiptLongIcon />, path: '/secciones/reclamos' }] : []),
-            ]
-          : []),
+          : [
+              ...((zonaId === 40 && (sectorId === 7 || sectorId === 13)) ? [{ text: 'Cajas', icon: <DeskIcon />, path: '/secciones/cajas' }] : []),
+              ...((zonaId === 40 && sectorId === 4) ? [{ text: 'Reclamos', icon: <ReceiptLongIcon />, path: '/secciones/reclamos' }] : []),
+              ...((zonaId === 40 && sectorId === 3) ? [{ text: 'Usuarios', icon: <GroupIcon />, path: '/secciones/usuarios' }] : []),
+            ]),
       ],
     },
-    ...(rol === 'Admin'
+    ...(esAdmin
       ? [
-          { text: 'Estados', icon: <TimelineIcon />, path: '/estados' },
+          { text: 'Estados', icon: <TimelineIcon />, path: `/turnero/estados`},
           { text: 'Mostradores', icon: <DeskIcon />, path: '/mostradores' },
           { text: 'Difusiones', icon: <TvIcon />, path: '/difusiones' },
           { text: 'Roles', icon: <ContentPasteIcon />, path: '/roles' },
           { text: 'Sectores', icon: <LocationOnIcon />, path: '/sectores' },
           { text: 'Usuarios', icon: <GroupIcon />, path: '/usuarios' },
         ]
-      : rol === 'Jefe'
-      ? [{ text: 'difusiones', icon: <TvIcon />, path: '/difusiones' }]
       : []),
   ];
 };

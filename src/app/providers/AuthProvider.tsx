@@ -41,15 +41,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const login = (data: AuthPayload) => {
     sessionStorage.setItem('token', data.token);
-    sessionStorage.setItem('nombre', data.name);
-    sessionStorage.setItem('username', data.username);
-    sessionStorage.setItem('rol', data.rol);
-    if (data.mostradorTipo) {
-      sessionStorage.setItem('mostradorTipo', data.mostradorTipo);
-    }
-    if (data.mostradorSector) {
-      sessionStorage.setItem('mostradorSector', data.mostradorSector);
-    }
+    if (data.usuario) sessionStorage.setItem('usuario', data.usuario);
+    if (data.nombre) sessionStorage.setItem('nombre', data.nombre);
+    if (data.apellido) sessionStorage.setItem('apellido', data.apellido);
+    if (data.zona) sessionStorage.setItem('zona', data.zona);
+    if (data.sector) sessionStorage.setItem('sector', data.sector);
+    if (data.zonaId) sessionStorage.setItem('zonaId', String(data.zonaId));
+    if (data.sectorId) sessionStorage.setItem('sectorId', String(data.sectorId));
+    if (data.permisos) sessionStorage.setItem('permisos', JSON.stringify(data.permisos));
     setIsAuthenticated(true);
   };
 

@@ -11,7 +11,7 @@ import {
   MenuItem,
 } from '@mui/material';
 import { DarkMode as DarkModeIcon, LightMode as LightModeIcon, Person as PersonIcon } from '@mui/icons-material';
-import { ThemeModeContext } from '@/app/providers/ThemeProvider';
+import { ThemeModeContext } from '@/app/providers/ThemeModeContext';
 import { alpha, useTheme } from '@mui/material/styles';
 
 const StyledAppBar = styled(AppBar)(({ theme }) => {

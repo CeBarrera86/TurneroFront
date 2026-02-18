@@ -1,8 +1,8 @@
-import { createEstado, deleteEstado, getEstadoPorId, getEstados, updateEstado } from '@/data/services/estadoService';
+import { createEstado, deleteEstado, getEstadoPorLetra, getEstados, updateEstado } from '@/data/services/estadoService';
 
 export const useEstadosApi = () => ({
   getEstados,
-  getEstadoPorId,
+  getEstadoPorLetra,
   createEstado,
   updateEstado,
   deleteEstado,

@@ -17,7 +17,6 @@ export const getSectores = async (token: string): Promise<Sector[]> => {
     token,
     ...defaultRetryOptions,
   });
-  console.log('[getSectores] response:', response);
   return Array.isArray(response) ? response : response.data;
 };
 

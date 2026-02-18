@@ -23,16 +23,32 @@ const CrearEstado = () => {
   ];
 
   const handleSuccess = () => {
-    navigate('/estados');
+    navigate('/turnero/estados');
   };
 
   return (
     <Box sx={{ maxWidth: 500, mx: 'auto' }}>
       <CrearForm
         campos={campos}
-        onSubmit={(payload, token) => createEstado(payload as any, token ?? '')}
+        onSubmit={(payload, token) => {
+          // Adaptar payload a la estructura esperada por la API
+          let letra = '';
+          let descripcion = '';
+          if (payload instanceof FormData) {
+            letra = payload.get('letra') as string || '';
+            descripcion = payload.get('descripcion') as string || '';
+          } else {
+            letra = (payload as any).letra ?? '';
+            descripcion = (payload as any).descripcion ?? '';
+          }
+          const adaptado = {
+            letra,
+            descripcion,
+          };
+          return createEstado(adaptado, token ?? '');
+        }}
         onSuccess={handleSuccess}
-        volverA="/estados"
+        volverA="/turnero/estados"
       />
     </Box>
   );

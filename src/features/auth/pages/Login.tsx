@@ -30,7 +30,7 @@ const MainContent = styled(Box)({
 });
 
 const Login = () => {
-  const [username, setUsername] = useState('');
+  const [usuario, setUsuario] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -44,7 +44,7 @@ const Login = () => {
     setMessage('');
 
     try {
-      const data = await loginRequest(username, password);
+      const data = await loginRequest(usuario, password);
 
       login(data);
       setMessage('Inicio de sesión exitoso. Redirigiendo...');
@@ -70,8 +70,8 @@ const Login = () => {
         <MainContent>
           <LoginForm
             handleLogin={handleLogin}
-            username={username}
-            setUsername={setUsername}
+            usuario={usuario}
+            setUsuario={setUsuario}
             password={password}
             setPassword={setPassword}
             message={message}

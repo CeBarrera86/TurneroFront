@@ -19,19 +19,19 @@ export interface TablaColumn {
 }
 
 export interface TablaRow {
-  id: Id;
   [key: string]: unknown;
 }
 
 interface TablaListadoProps {
   columns: TablaColumn[];
   rows: TablaRow[];
-  onEdit: (id: Id) => void;
-  onDelete: (id: Id) => void;
+  onEdit: (rowKey: string) => void;
+  onDelete: (rowKey: string) => void;
   maxWidth?: number | string;
+  rowKey?: string; // clave única para identificar la fila
 }
 
-const TablaListado = ({ columns, rows, onEdit, onDelete, maxWidth }: TablaListadoProps) => {
+const TablaListado = ({ columns, rows, onEdit, onDelete, maxWidth, rowKey = 'id' }: TablaListadoProps) => {
   const defaultOrderBy = columns.find((c) => ['id', 'ID', 'Id'].includes(c.key))?.key || '';
   const [orderBy, setOrderBy] = useState(defaultOrderBy);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
@@ -89,22 +89,22 @@ const TablaListado = ({ columns, rows, onEdit, onDelete, maxWidth }: TablaListad
         </TableHead>
         <TableBody>
           {paginatedRows.map((row) => (
-            <TableRow key={row.id}>
+            <TableRow key={row[rowKey] as string}>
               {columns.map(({ key }) => {
                 const value = row[key];
                 const display = value === null || value === undefined ? '—' :
                   typeof value === 'string' || typeof value === 'number' ? value : String(value);
                 return (
-                  <TableCell key={key} align="center">
+                  <TableCell key={`${key}-${row[rowKey]}`} align="center">
                     {display}
                   </TableCell>
                 );
               })}
               <TableCell align="center">
-                <IconButton onClick={() => onEdit(row.id)}>
+                <IconButton onClick={() => onEdit(row[rowKey] as string)}>
                   <EditIcon />
                 </IconButton>
-                <IconButton onClick={() => onDelete(row.id)}>
+                <IconButton onClick={() => onDelete(row[rowKey] as string)}>
                   <DeleteIcon />
                 </IconButton>
               </TableCell>

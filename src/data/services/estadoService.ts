@@ -3,7 +3,8 @@ import { defaultRetryOptions, request } from '@/data/http/httpClient';
 import type { Id } from '@/domain/models/common';
 import type { Estado } from '@/domain/models/estado';
 
-const BASE_URL = `${config.urlBase}${config.apiPrefix}/Estado`;
+const BASE_URL = `${config.urlBase}${config.apiPrefix}/turnero/estados`;
+const BASE_URL_SINGULAR = `${config.urlBase}${config.apiPrefix}/turnero/estado`;
 
 type PagedResponse<T> = {
   data: T[];
@@ -20,15 +21,18 @@ export const getEstados = async (token: string): Promise<Estado[]> => {
   return Array.isArray(response) ? response : response.data;
 };
 
-export const getEstadoPorId = async (id: Id, token: string): Promise<Estado> => {
-  return request<Estado>(`${BASE_URL}/${id}`, { token, ...defaultRetryOptions });
+export const getEstadoPorLetra = async (letra: Id, token: string): Promise<Estado> => {
+  return request<Estado>(`${BASE_URL_SINGULAR}/${letra}`, { token, ...defaultRetryOptions });
 };
 
 export const createEstado = async (payload: Estado, token: string): Promise<Estado> => {
-  return request<Estado>(BASE_URL, {
+  return request<Estado>(BASE_URL_SINGULAR, {
     method: 'POST',
     token,
-    body: payload,
+    body: JSON.stringify(payload),
+    headers: {
+      'Content-Type': 'application/json',
+    },
   });
 };
 
@@ -37,13 +41,16 @@ export const updateEstado = async (
   payload: Estado,
   token: string
 ): Promise<Estado> => {
-  return request<Estado>(`${BASE_URL}/${id}`, {
+  return request<Estado>(`${BASE_URL_SINGULAR}/${id}`, {
     method: 'PUT',
     token,
-    body: payload,
+    body: JSON.stringify(payload),
+    headers: {
+      'Content-Type': 'application/json',
+    },
   });
 };
 
 export const deleteEstado = async (id: Id, token: string): Promise<void> => {
-  await request<void>(`${BASE_URL}/${id}`, { method: 'DELETE', token, responseType: 'void' });
+  await request<void>(`${BASE_URL_SINGULAR}/${id}`, { method: 'DELETE', token, responseType: 'void' });
 };

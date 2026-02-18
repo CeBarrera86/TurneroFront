@@ -152,11 +152,21 @@ const SidebarItem = ({
     );
   }
 
+  // Soporte para navegación interna y externa en ítems de nivel superior
+  const isExternal = (item as any).isExternal;
+  // Depuración: log de props y path
+  if (!item.children) {
+  }
   return (
     <ListItem disablePadding>
       <ListItemButton
-        component={NavLink}
-        to={item.path ?? '#'}
+        component={isExternal ? 'a' : NavLink}
+        to={isExternal ? undefined : item.path ?? '#'}
+        href={isExternal ? item.path : undefined}
+        target={isExternal ? '_blank' : undefined}
+        rel={isExternal ? 'noopener noreferrer' : undefined}
+        onClick={() => {
+        }}
         sx={{
           mx: 1.5,
           my: 0.5,

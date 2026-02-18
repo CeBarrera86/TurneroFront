@@ -7,6 +7,7 @@ import {
   llamarTicket,
   rellamarTicket,
 } from '@/data/services/ticketService';
+import { createTurno } from '@/data/services/turnoService';
 import { getSectores } from '@/data/services/sectorService';
 import { getUsuariosPorSector } from '@/data/services/usuarioService';
 
@@ -20,4 +21,5 @@ export {
   rellamarTicket,
   getSectores,
   getUsuariosPorSector,
+  createTurno,
 };

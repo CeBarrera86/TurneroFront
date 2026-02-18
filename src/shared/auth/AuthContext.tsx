@@ -2,11 +2,14 @@ import { createContext } from 'react';
 
 export interface AuthPayload {
   token: string;
-  name: string;
-  username: string;
-  rol: string;
-  mostradorTipo?: string;
-  mostradorSector?: string;
+  usuario?: string;
+  nombre?: string;
+  apellido?: string;
+  zona?: string;
+  sector?: string;
+  zonaId?: number;
+  sectorId?: number;
+  permisos?: string[];
 }
 
 export interface AuthContextValue {

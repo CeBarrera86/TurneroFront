@@ -37,6 +37,7 @@ interface InnerAtencionSectorProps {
   tickets: TicketRow[];
   sectores: Sector[];
   errorDialog: string;
+  errorMessage: string;
   confirmDialogOpen: boolean;
   dialogoAtencionOpen: boolean;
   dialogoDerivarOpen: boolean;
@@ -54,6 +55,7 @@ interface InnerAtencionSectorProps {
   onConfirmDerivacion: () => void;
   onRellamar: () => void;
   onCloseError: () => void;
+  onCloseErrorMessage: () => void;
   onCancelDelete: () => void;
   onSectorChange: (value: Id | null) => void;
   onUsuarioChange: (value: Id | null) => void;
@@ -64,6 +66,7 @@ const InnerAtencionSector = ({
   tickets,
   sectores,
   errorDialog,
+  errorMessage,
   confirmDialogOpen,
   dialogoAtencionOpen,
   dialogoDerivarOpen,
@@ -81,6 +84,7 @@ const InnerAtencionSector = ({
   onConfirmDerivacion,
   onRellamar,
   onCloseError,
+  onCloseErrorMessage,
   onCancelDelete,
   onSectorChange,
   onUsuarioChange,
@@ -187,6 +191,7 @@ const InnerAtencionSector = ({
       />
 
       <ErrorDialog open={!!errorDialog} mensaje={errorDialog} onClose={onCloseError} />
+      <ErrorDialog open={!!errorMessage} mensaje={errorMessage} onClose={onCloseErrorMessage} />
     </Container>
   );
 };

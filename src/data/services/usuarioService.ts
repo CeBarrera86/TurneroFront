@@ -17,7 +17,6 @@ export const getUsuarios = async (token: string): Promise<Usuario[]> => {
     token,
     ...defaultRetryOptions,
   });
-  console.log('[getUsuarios] response:', response);
 
   const usuarios = Array.isArray(response) ? response : response.data;
   return usuarios.map((u) => ({

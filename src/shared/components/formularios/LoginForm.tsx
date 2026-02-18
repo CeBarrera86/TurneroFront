@@ -5,8 +5,8 @@ import LockIcon from '@mui/icons-material/Lock';
 
 interface LoginFormProps {
   handleLogin: (e: React.FormEvent<HTMLFormElement>) => void;
-  username: string;
-  setUsername: (value: string) => void;
+  usuario: string;
+  setUsuario: (value: string) => void;
   password: string;
   setPassword: (value: string) => void;
   message: string;
@@ -16,8 +16,8 @@ interface LoginFormProps {
 
 const LoginForm = ({
   handleLogin,
-  username,
-  setUsername,
+  usuario,
+  setUsuario,
   password,
   setPassword,
   message,
@@ -26,8 +26,8 @@ const LoginForm = ({
 }: LoginFormProps) => {
   const theme = useTheme();
 
-  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUsername(e.target.value);
+  const handleUsuarioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUsuario(e.target.value);
     setMessage('');
   };
 
@@ -74,8 +74,8 @@ const LoginForm = ({
             label="Usuario"
             variant="outlined"
             fullWidth
-            value={username}
-            onChange={handleUsernameChange}
+            value={usuario}
+            onChange={handleUsuarioChange}
             disabled={loading}
             autoComplete="username"
             InputProps={{
